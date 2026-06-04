@@ -996,13 +996,6 @@ function sendRsvp(){
 
 
 (function(){
-  function updateLang(){
-    var hero=document.getElementById('hero');
-    var y=window.scrollY||document.documentElement.scrollTop||0;
-    var show=!!hero && y<6;
-    document.body.classList.toggle('eventia-show-lang',show);
-    document.body.classList.toggle('eventia-lang-hidden',!show);
-  }
   function fitTimelineTight(){
     var f=document.getElementById('timelineExactFrame');
     if(!f)return;
@@ -1019,11 +1012,10 @@ function sendRsvp(){
     h=Math.min(Math.max(h+6,fallback),1220);
     f.style.height=h+'px';f.style.minHeight=h+'px';
   }
-  function boot(){updateLang();fitTimelineTight();setTimeout(updateLang,80);setTimeout(fitTimelineTight,400);setTimeout(fitTimelineTight,1200);}
+  function boot(){fitTimelineTight();setTimeout(fitTimelineTight,400);setTimeout(fitTimelineTight,1200);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  window.addEventListener('scroll',updateLang,{passive:true});
-  window.addEventListener('resize',function(){updateLang();fitTimelineTight();},{passive:true});
-  window.addEventListener('orientationchange',function(){setTimeout(function(){updateLang();fitTimelineTight();},250);},{passive:true});
+  window.addEventListener('resize',function(){fitTimelineTight();},{passive:true});
+  window.addEventListener('orientationchange',function(){setTimeout(function(){fitTimelineTight();},250);},{passive:true});
 })();
 
 
@@ -1072,13 +1064,6 @@ function sendRsvp(){
   };
   refresh(); window.addEventListener('resize',refresh,{passive:true}); window.addEventListener('orientationchange',function(){setTimeout(refresh,250);},{passive:true});
   if('ResizeObserver' in window){var ro=new ResizeObserver(refresh);document.querySelectorAll('#hero,#rsvp,.story2-block,.timeline-host,#empreintes').forEach(function(el){ro.observe(el);});}
-  // Bouton langue : visible uniquement tant que la position d'origine du hero est à l'écran, ne suit pas le hero.
-  var topnav=document.getElementById('topnav'); var hero=document.getElementById('hero');
-  function langState(){
-    if(!topnav||!hero)return; var r=hero.getBoundingClientRect();
-    topnav.classList.toggle('eventia-lang-hidden', r.top < -8 || r.bottom <= 80);
-  }
-  langState(); window.addEventListener('scroll',langState,{passive:true});
   // Ajustement iframe timeline sans scrollbar parasite.
   function fitIframe(id, extra){var f=document.getElementById(id); if(!f)return; try{var d=f.contentDocument||f.contentWindow.document; var h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight); if(h>100)f.style.height=(h+(extra||0))+'px';}catch(e){}}
   setTimeout(function(){fitIframe('timelineExactFrame',8);},700); setTimeout(function(){fitIframe('timelineExactFrame',8);},1800);
@@ -1328,7 +1313,7 @@ function sendRsvp(){
 })();
 
 
-/* === PHASE 3 BLOC 1 — Bouton langue : contrôle unique === */
+/* === PHASE 3 — Bouton langue : contrôleur unique === */
 (function() {
   function syncLang() {
     var y = window.scrollY || document.documentElement.scrollTop || 0;
@@ -1337,6 +1322,9 @@ function sendRsvp(){
     document.body.classList.toggle('eventia-lang-hidden', hidden);
     document.body.classList.toggle('eventia-hide-lang',   hidden);
     document.body.classList.toggle('eventia-scrolled',    hidden);
+    document.body.classList.toggle('eventia-show-lang',   !hidden);
+    var nav = document.getElementById('topnav');
+    if (nav) nav.classList.toggle('eventia-lang-hidden', hidden);
   }
   window.addEventListener('scroll', syncLang, {passive: true});
   ready(function() { syncLang(); });
