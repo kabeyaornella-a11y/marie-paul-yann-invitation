@@ -988,20 +988,9 @@ function sendRsvp(){
     applyLang(l);
   };
 
-  function updateLangVisibility(){
-    var hero=document.getElementById('hero');
-    if(!hero)return;
-    var r=hero.getBoundingClientRect();
-    var visible=(r.bottom>80 && r.top<window.innerHeight-80);
-    document.body.classList.toggle('eventia-lang-hidden',!visible);
-  }
-
   ready(function(){
     assignI18n();
     applyLang(window.currentLang||'fr');
-    updateLangVisibility();
-    window.addEventListener('scroll',updateLangVisibility,{passive:true});
-    window.addEventListener('resize',updateLangVisibility,{passive:true});
   });
 })();
 
@@ -1116,16 +1105,9 @@ function sendRsvp(){
       rsvp.style.setProperty('--rsvpTop', top+'px');
     }
   }
-  function controlLang(){
-    var hero=document.getElementById('hero');
-    if(!hero)return;
-    var top=window.scrollY||document.documentElement.scrollTop||0;
-    document.body.classList.toggle('eventia-scrolled', top>8);
-  }
-  window.addEventListener('scroll', controlLang, {passive:true});
-  window.addEventListener('resize', function(){updateContainerVars();controlLang();}, {passive:true});
+  window.addEventListener('resize', function(){updateContainerVars();}, {passive:true});
   document.addEventListener('DOMContentLoaded', function(){
-    updateContainerVars();controlLang();
+    updateContainerVars();
     setTimeout(updateContainerVars,300);setTimeout(updateContainerVars,900);
     document.querySelectorAll('.story2-citation').forEach(function(el){el.classList.add('in-view')});
     var replay=document.getElementById('replay-experience');
@@ -1144,7 +1126,6 @@ function sendRsvp(){
 ;
 
 (function(){
-  function setLangVisibility(){document.body.classList.toggle('eventia-hide-lang',(window.scrollY||document.documentElement.scrollTop||0)>8);}
   function showVerse(){
     var c=document.querySelector('.story2-citation'), t=document.querySelector('.story2-cit-text');
     if(c){c.style.display='block';c.style.visibility='visible';c.style.opacity='1';c.classList.add('in-view','is-swept');}
@@ -1168,22 +1149,15 @@ function sendRsvp(){
     if(b){b.textContent='Revivre l’expérience'; if(!b.dataset.v32){b.dataset.v32='1'; b.addEventListener('click',function(){try{sessionStorage.clear();localStorage.removeItem('eventiaEntered');localStorage.removeItem('eventiaOpened');}catch(e){} window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){location.reload();},500);});}}
   }
   ready(function(){
-    setLangVisibility();showVerse();fitFrames();wireOuiConfetti();fixReplay();
+    showVerse();fitFrames();wireOuiConfetti();fixReplay();
     setTimeout(showVerse,400);setTimeout(fitFrames,700);setTimeout(fitFrames,1500);
   });
-  window.addEventListener('scroll',setLangVisibility,{passive:true});
-  window.addEventListener('resize',function(){setLangVisibility();fitFrames();},{passive:true});
+  window.addEventListener('resize',function(){fitFrames();},{passive:true});
 })();
 
 ;
 
 (function(){
-  function langVisibility(){
-    var y=window.scrollY||document.documentElement.scrollTop||0;
-    document.body.classList.toggle('eventia-lang-hidden', y>6);
-    document.body.classList.toggle('eventia-hide-lang', y>6);
-    document.body.classList.toggle('eventia-scrolled', y>6);
-  }
   function fitFrames(){
     var tl=document.getElementById('timelineExactFrame');
     if(tl){tl.style.height=(window.innerWidth<=430?'1160px':'1180px');tl.style.minHeight=tl.style.height;tl.style.maxHeight='none';}
@@ -1214,9 +1188,8 @@ function sendRsvp(){
     }
     setTimeout(function(){layer.remove();},1250);
   }
-  ready(function(){langVisibility();fitFrames();showVerse();wireRsvpConfetti();setTimeout(fitFrames,600);setTimeout(showVerse,900);});
-  window.addEventListener('scroll',langVisibility,{passive:true});
-  window.addEventListener('resize',function(){langVisibility();fitFrames();},{passive:true});
+  ready(function(){fitFrames();showVerse();wireRsvpConfetti();setTimeout(fitFrames,600);setTimeout(showVerse,900);});
+  window.addEventListener('resize',function(){fitFrames();},{passive:true});
 })();
 
 
@@ -1232,15 +1205,6 @@ function sendRsvp(){
       el.style.setProperty('--container-h', r.height+'px');
       el.dataset.cw=Math.round(r.width); el.dataset.ch=Math.round(r.height);
     });
-  }
-
-  function controlLang(){
-    var y=window.scrollY||document.documentElement.scrollTop||0;
-    document.body.classList.toggle('eventia-lang-hidden', y>6);
-    document.body.classList.toggle('eventia-hide-lang', y>6);
-    document.body.classList.toggle('eventia-scrolled', y>6);
-    var l=q('#lang-sw');
-    if(l){ l.style.removeProperty('display'); l.style.removeProperty('visibility'); l.style.removeProperty('opacity'); }
   }
 
   function forceVerse(){
@@ -1355,11 +1319,25 @@ function sendRsvp(){
   window.setLang._eventiaV44=true;
 
   ready(function(){
-    updateContainerVars(); controlLang(); forceVerse(); forceShimmer(); tuneHeroStars(); wireRsvp(); addCalendarButton(); normalizeTextPunctuation(); improveLoading();
+    updateContainerVars(); forceVerse(); forceShimmer(); tuneHeroStars(); wireRsvp(); addCalendarButton(); normalizeTextPunctuation(); improveLoading();
     setTimeout(function(){forceVerse();forceShimmer();tuneHeroStars();},500);
     setTimeout(function(){forceVerse();forceShimmer();updateContainerVars();},1400);
   });
-  window.addEventListener('scroll',controlLang,{passive:true});
-  window.addEventListener('resize',function(){updateContainerVars();controlLang();},{passive:true});
+  window.addEventListener('resize',function(){updateContainerVars();},{passive:true});
   window.addEventListener('message',function(e){ if(e.data && e.data.type==='eventia-scratch-complete') setTimeout(finalConfetti,520); });
+})();
+
+
+/* === PHASE 3 BLOC 1 — Bouton langue : contrôle unique === */
+(function() {
+  function syncLang() {
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    var hidden = y > 0;
+    document.body.classList.toggle('lang-hidden',         hidden);
+    document.body.classList.toggle('eventia-lang-hidden', hidden);
+    document.body.classList.toggle('eventia-hide-lang',   hidden);
+    document.body.classList.toggle('eventia-scrolled',    hidden);
+  }
+  window.addEventListener('scroll', syncLang, {passive: true});
+  ready(function() { syncLang(); });
 })();
