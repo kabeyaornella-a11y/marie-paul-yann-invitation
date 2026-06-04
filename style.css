@@ -8162,18 +8162,19 @@ body.eventia-lang-hidden #topnav #lang-sw,body.eventia-hide-lang #topnav #lang-s
 /* Responsive conteneur : variables disponibles pour placements JS/CSS */
 .es-section,#hero,#rsvp,.story2-block,.date-chapter,.countdown-chapter,.program-chapter,.final-chapter{container-type:inline-size;--cw:100%;--ch:100%;}
 
-/* === PHASE 3 BLOC 1 — Bouton langue : autorité finale === */
-#lang-sw {
-  position: relative !important;
+/* === PHASE 3 — Bouton langue : autorité finale (spécificité 2,1,1) === */
+/* SHOW : y=0, eventia-show-lang présent sur body */
+body.eventia-show-lang #topnav #lang-sw {
+  display: flex !important;
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
-  transition: opacity 0.22s ease, visibility 0.22s ease !important;
 }
-body.lang-hidden #lang-sw,
-body.eventia-lang-hidden #lang-sw,
-body.eventia-hide-lang #lang-sw,
-body.eventia-scrolled #lang-sw {
+/* HIDE : y>0, toutes les classes hide synchronisées */
+body.lang-hidden #topnav #lang-sw,
+body.eventia-lang-hidden #topnav #lang-sw,
+body.eventia-hide-lang #topnav #lang-sw,
+body.eventia-scrolled #topnav #lang-sw {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
