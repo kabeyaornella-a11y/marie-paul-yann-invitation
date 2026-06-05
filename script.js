@@ -1423,3 +1423,140 @@ function sendRsvp(){
     draw();
   });
 })();
+
+
+/* ===== PATCH V46 — Corrections finales exhaustives ===== */
+(function(){
+  'use strict';
+
+  /* ── 1. ACTIVITÉS : manipulation directe d'opacité, bypass CSS conflicts */
+  (function(){
+    var root = document.querySelector('.es-activities-option3');
+    if(!root) return;
+    function showActivity(key){
+      root.querySelectorAll('.es-act-panorama img').forEach(function(img){
+        var active = img.getAttribute('data-act-img') === key;
+        img.classList.toggle('active', active);
+        img.style.setProperty('opacity', active ? '1' : '0', 'important');
+        img.style.setProperty('transform', active ? 'scale(1)' : 'scale(1.075)', 'important');
+        img.style.setProperty('z-index', active ? '1' : '0', 'important');
+        img.style.setProperty('pointer-events', active ? 'auto' : 'none', 'important');
+      });
+      root.querySelectorAll('.es-act-selector button').forEach(function(btn){
+        btn.classList.toggle('active', btn.getAttribute('data-act-place') === key);
+      });
+      var info = {
+        fontainebleau:{tag:'Patrimoine',title:'Château de Fontainebleau',text:'Un incontournable royal, entre jardins majestueux, galeries historiques et architecture remarquable.'},
+        foret:{tag:'Nature',title:'Forêt de Fontainebleau',text:'Une parenthèse paisible pour se promener, respirer et découvrir les paysages emblématiques de la région.'},
+        parrot:{tag:'Famille',title:'Parrot World',text:'Une expérience immersive et colorée, parfaite pour les familles et les amoureux de la nature.'}
+      };
+      var d = info[key]; if(!d) return;
+      var tag=root.querySelector('#esActTag'), title=root.querySelector('#esActTitle'), text=root.querySelector('#esActText');
+      if(tag) tag.textContent = d.tag;
+      if(title) title.textContent = d.title;
+      if(text) text.textContent = d.text;
+    }
+    /* Initialiser la première image visible */
+    showActivity('fontainebleau');
+    /* Écouter les clics sur chaque bouton et sur leurs enfants */
+    root.addEventListener('click', function(e){
+      var btn = e.target.closest('.es-act-selector button');
+      if(!btn) return;
+      var key = btn.getAttribute('data-act-place');
+      if(key) showActivity(key);
+    });
+  })();
+
+  /* ── 2. VERSET BIBLIQUE : supprimer animation:none que forceVerse() injecte sur les spans */
+  (function restoreVerseAnim(){
+    function fix(){
+      document.querySelectorAll('.story2-cit-text span').forEach(function(s){
+        s.style.removeProperty('animation');
+        s.style.setProperty('display','block','important');
+        s.style.setProperty('opacity','1','important');
+        s.style.setProperty('visibility','visible','important');
+        s.style.setProperty('color','#8B5F2D','important');
+        s.style.setProperty('-webkit-text-fill-color','#8B5F2D','important');
+        s.style.setProperty('clip-path','none','important');
+        s.style.setProperty('transform','none','important');
+      });
+    }
+    setTimeout(fix, 700);
+    setTimeout(fix, 1600);
+    setTimeout(fix, 3200);
+    setTimeout(fix, 5000);
+  })();
+
+  /* ── 3. RSVP CONFETTI : s'assurer que le confetti se déclenche aussi au clic sur le label */
+  (function(){
+    function fireConfetti(){
+      if(typeof window.launchRsvpConfetti === 'function') window.launchRsvpConfetti();
+      /* Seconde couche via fastConfettiLayer si disponible */
+      var box = document.querySelector('#rsvp .presence-options') || document.querySelector('#rsvp');
+      if(box){
+        var r = box.getBoundingClientRect();
+        var cx = r.left + r.width/2, cy = r.top + r.height/2;
+        if(typeof fastConfettiLayer === 'function'){
+          fastConfettiLayer(cx, cy, 80);
+          setTimeout(function(){ fastConfettiLayer(cx-40, cy-15, 55); }, 110);
+          setTimeout(function(){ fastConfettiLayer(cx+40, cy-15, 55); }, 210);
+        }
+      }
+    }
+    document.querySelectorAll('#rsvp .presence-pill').forEach(function(label){
+      if(label.dataset.v46) return; label.dataset.v46='1';
+      label.addEventListener('click', function(){
+        var inp = label.querySelector('input[value="oui"]');
+        if(inp) setTimeout(function(){ if(inp.checked) fireConfetti(); }, 60);
+      });
+    });
+    document.querySelectorAll('#rsvp input[name="presence"][value="oui"]').forEach(function(inp){
+      if(inp.dataset.v46) return; inp.dataset.v46='1';
+      inp.addEventListener('change', function(){ if(inp.checked) fireConfetti(); });
+    });
+  })();
+
+  /* ── 4. SHIMMER : forcer animation-play-state:running après chargement */
+  (function(){
+    function reboot(){
+      document.querySelectorAll('.h-names,.final-h-names').forEach(function(el){
+        el.style.setProperty('animation-play-state','running','important');
+      });
+    }
+    setTimeout(reboot, 600);
+    setTimeout(reboot, 1800);
+  })();
+
+  /* ── 5. BOUTON CALENDRIER : fallback — révéler si scroll vers le bas et scratch visible */
+  (function(){
+    /* Assurer que le postMessage 'eventia-scratch-complete' déclenche bien la révélation */
+    window.addEventListener('message', function(e){
+      if(!e || !e.data) return;
+      var t = e.data.type;
+      if(t === 'eventia-scratch-complete' || t === 'eventia-date-revealed'){
+        setTimeout(function(){
+          if(typeof window.eventiaRevealCalendar === 'function') window.eventiaRevealCalendar();
+        }, 50);
+      }
+    });
+  })();
+
+  /* ── 6. CONFETTI FINAL : s'assurer que finalConfetti reste rapide */
+  (function(){
+    var orig = window.eventiaFinalConfetti;
+    window.eventiaFinalConfetti = function(){
+      var pts = [[.18,.42],[.5,.32],[.82,.42],[.34,.6],[.66,.6]];
+      [0,80,180].forEach(function(delay){
+        setTimeout(function(){
+          pts.forEach(function(p,i){
+            setTimeout(function(){
+              if(typeof fastConfettiLayer==='function')
+                fastConfettiLayer(innerWidth*p[0], innerHeight*p[1], 40);
+            }, i*6);
+          });
+        }, delay);
+      });
+    };
+  })();
+
+})();
