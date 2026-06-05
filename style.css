@@ -8368,3 +8368,65 @@ section#empreintes{padding-top:clamp(6px,1.2vh,14px)!important;margin-top:0!impo
 section#cadeaux{padding-top:clamp(6px,1.2vh,14px)!important;margin-top:0!important;}
 /* 4 — RSVP → Remerciements */
 section#remerciements{padding-top:clamp(16px,3vh,28px)!important;margin-top:0!important;}
+
+/* ============================================================
+   Eventia V45-D — Boutons, shimmer fiable, verset, espaces
+   ============================================================ */
+
+/* Boutons nav réduits */
+#topnav{top:calc(env(safe-area-inset-top,0px) + 8px)!important;right:10px!important;gap:8px!important;}
+#topnav #lang-sw{height:24px!important;min-width:58px!important;font-size:0!important;}
+#topnav #lang-sw button{font-size:9px!important;letter-spacing:.06em!important;padding:0 7px!important;height:24px!important;line-height:24px!important;min-width:0!important;}
+#topnav #mus-btn{width:26px!important;height:26px!important;font-size:13px!important;border-radius:50%!important;min-width:0!important;}
+
+/* Shimmer fiable — gradient horizontal + mouvement linéaire */
+@keyframes eventiaV44Shimmer{
+  0%  {background-position:100% center;}
+  100%{background-position:-100% center;}
+}
+#hero .h-names,#photo-finale .final-h-names,.h-names,.final-h-names{
+  font-family:'ChopinScript','Great Vibes',cursive!important;
+  background:linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)!important;
+  background-size:300% 100%!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  animation:eventiaV44Shimmer 3.5s linear infinite!important;
+  will-change:background-position!important;
+}
+
+/* Verset biblique : agrandissement + halo lumineux */
+@keyframes versetGlow{
+  0%,100%{text-shadow:0 0 10px rgba(185,144,72,.18),0 0 24px rgba(215,175,90,.10);}
+  50%{text-shadow:0 0 20px rgba(185,144,72,.55),0 0 40px rgba(215,175,90,.32),0 0 60px rgba(255,230,140,.16);}
+}
+.story2-citation .story2-cit-text{
+  font-size:clamp(26px,6.5vw,40px)!important;
+  line-height:1.5!important;
+  animation:versetGlow 3.5s ease-in-out infinite!important;
+}
+.story2-citation .story2-cit-text span{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;
+  background:none!important;clip-path:inset(0 0 0 0)!important;
+  transform:none!important;animation:inherit!important;
+}
+
+/* RSVP → Remerciements : pull-up agressif */
+section#remerciements{margin-top:-160px!important;padding-top:clamp(20px,4vh,36px)!important;position:relative!important;z-index:2!important;}
+
+/* Dégradés de transition manquants */
+#notre-date{position:relative!important;}
+#notre-date::before{content:'';position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,rgba(247,239,227,.85),transparent);z-index:2;pointer-events:none;}
+#les-lieux{position:relative!important;}
+#programme{position:relative!important;}
+#programme::before{content:'';position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,rgba(247,239,227,.8),transparent);z-index:1;pointer-events:none;}
+#autour{position:relative!important;}
+#autour::before{content:'';position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,rgba(247,239,227,.75),transparent);z-index:1;pointer-events:none;}
+#empreintes::before{content:'';position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,rgba(247,239,227,.75),transparent);z-index:1;pointer-events:none;}
+
+/* Shimmer V45-B override pour prendre le dessus */
+.h-names,.final-h-names{
+  background:linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)!important;
+  background-size:300% 100%!important;
+  animation:eventiaV44Shimmer 3.5s linear infinite!important;
+}

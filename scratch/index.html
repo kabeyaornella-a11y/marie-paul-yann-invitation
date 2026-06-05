@@ -960,6 +960,7 @@ function finishMedal(medalEl, idx) {
     try { window.parent.postMessage({type:'eventia-scratch-start'}, '*'); } catch(e) {}
   }
   if (doneCount === 3) {
+    try { window.parent.eventiaRevealCalendar(); } catch(e) {}
     try { window.parent.postMessage({type:'eventia-scratch-complete'}, '*'); } catch(e) {}
     setTimeout(function(){
       document.getElementById('medals').classList.add('hide');

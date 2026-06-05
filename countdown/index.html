@@ -352,6 +352,15 @@ function makeParticles(){
 makeParticles();
 render();
 setInterval(render,1000);
+// i18n from parent
+var labelsEN=['DAYS','HOURS','MINUTES','SECONDS'];
+var labelsFR=['JOURS','HEURES','MINUTES','SECONDES'];
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='setLang'){
+    var src=e.data.lang==='en'?labelsEN:labelsFR;
+    labels.length=0; src.forEach(function(l){labels.push(l);}); render();
+  }
+});
 </script>
 </body>
 </html>

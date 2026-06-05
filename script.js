@@ -462,6 +462,18 @@ function c3swipe(id) {
   },{passive:true});
 }
 c3init('stay'); c3swipe('stay');
+(function(){
+  var nav=document.getElementById('stay-nav');
+  if(nav){
+    nav.querySelectorAll('.c3-arrow').forEach(function(btn){
+      btn.addEventListener('click',function(){(btn.getAttribute('data-dir')==='prev'?c3prev:c3next)('stay');});
+    });
+    nav.querySelectorAll('.c3-dot').forEach(function(dot,i){
+      dot.addEventListener('click',function(){c3go('stay',i);});
+    });
+  }
+  c3render('stay');
+})();
 
 /* ═══ ACCORDÉON ═══ */
 function paToggle(idx) {
@@ -478,11 +490,6 @@ function paToggle(idx) {
   ready(function(){
     var intro=document.getElementById('txt-intro');
     if(intro){intro.textContent='VOUS ÊTES CONVIÉS À LA CÉLÉBRATION DU MARIAGE DE';}
-    var hero=document.getElementById('hero');
-    if(hero){
-      var snow=hero.querySelector('.hero-snow');
-      if(snow){[].slice.call(snow.children).forEach(function(p){p.style.animationDuration=(72+Math.random()*45).toFixed(2)+'s';p.style.animationDelay=(-Math.random()*30).toFixed(2)+'s';p.style.setProperty('--drift',((Math.random()*26)-13).toFixed(1)+'px');});}
-    }
     var domain=document.querySelector('[data-carousel="domain"]');
     if(domain){
       var imgs=[].slice.call(domain.querySelectorAll('img.place-slide'));
@@ -507,19 +514,8 @@ if(pb){
   }, {passive:true});
 }
 
-/* ── LANG SW : cacher au scroll (disparaît après le hero) ── */
-var langSw = document.getElementById('lang-sw');
+/* ── LANG SW : géré par Phase 3 syncLang() ── */
 var heroEl = document.getElementById('hero');
-if(langSw && heroEl){
-  window.addEventListener('scroll', function(){
-    var heroBottom = heroEl.getBoundingClientRect().bottom;
-    if(heroBottom < 0){
-      langSw.classList.add('hidden');
-    } else {
-      langSw.classList.remove('hidden');
-    }
-  }, {passive:true});
-}
 
 /* ── ANCHOR NAV ── */
 var anchorNav = document.getElementById('anchor-nav');
@@ -1210,13 +1206,13 @@ function sendRsvp(){
   function forceShimmer(){
     qa('.h-names,.final-h-names').forEach(function(el){
       el.style.setProperty('font-family',"'ChopinScript','Great Vibes',cursive",'important');
-      el.style.setProperty('background','linear-gradient(105deg,#7A4B20 0%,#B99048 18%,#F3D391 34%,#FFF3C1 48%,#C99A45 63%,#8A5B1E 82%,#F3D391 100%)','important');
-      el.style.setProperty('background-size','300% auto','important');
+      el.style.setProperty('background','linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)','important');
+      el.style.setProperty('background-size','300% 100%','important');
       el.style.setProperty('-webkit-background-clip','text','important');
       el.style.setProperty('background-clip','text','important');
       el.style.setProperty('-webkit-text-fill-color','transparent','important');
       el.style.setProperty('color','transparent','important');
-      el.style.setProperty('animation','eventiaV44Shimmer 4.4s ease-in-out infinite','important');
+      el.style.setProperty('animation','eventiaV44Shimmer 3.5s linear infinite','important');
     });
   }
 
@@ -1270,8 +1266,8 @@ function sendRsvp(){
     setTimeout(function(){layer.remove();},1100);
   }
   function finalConfetti(){
-    var pts=[[.12,.5],[.28,.42],[.5,.38],[.72,.42],[.88,.5],[.5,.62],[.3,.58],[.7,.58]];
-    [0,60,140,260,420].forEach(function(delay){setTimeout(function(){pts.forEach(function(p,i){setTimeout(function(){fastConfettiLayer(innerWidth*p[0],innerHeight*p[1],68);},i*6);});},delay);});
+    var pts=[[.2,.45],[.5,.35],[.8,.45],[.35,.62],[.65,.62]];
+    [0,90,200].forEach(function(delay){setTimeout(function(){pts.forEach(function(p,i){setTimeout(function(){fastConfettiLayer(innerWidth*p[0],innerHeight*p[1],36);},i*8);});},delay);});
   }
   window.eventiaFinalConfetti=finalConfetti;
 
@@ -1332,6 +1328,7 @@ function sendRsvp(){
     if(previousSetLang && previousSetLang!==window.setLang){ try{ previousSetLang(lang); }catch(e){} }
     applyLangFinal(lang);
     forceVerse(); forceShimmer(); wireRsvp(); addCalendarButton();
+    document.querySelectorAll('iframe').forEach(function(f){try{f.contentWindow.postMessage({type:'setLang',lang:lang},'*');}catch(e){}});
   };
   window.setLang._eventiaV44=true;
 
@@ -1341,20 +1338,21 @@ function sendRsvp(){
     setTimeout(function(){forceVerse();forceShimmer();updateContainerVars();},1400);
   });
   window.addEventListener('resize',function(){updateContainerVars();},{passive:true});
+  window.eventiaRevealCalendar=function(){
+    var btn=document.getElementById('calendarBtnParent');
+    if(!btn||btn._revealed) return; btn._revealed=true;
+    var sEl=document.createElement('style');
+    sEl.textContent='#calendarBtnParent{display:inline-flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;margin-top:16px!important;}';
+    document.head.appendChild(sEl);
+    btn.classList.add('eventia-revealed');
+    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},300);
+    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},1000);
+  };
   window.addEventListener('message',function(e){
     if(!e.data) return;
     var t=e.data.type, a=e.data.action;
     if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
-      var btn=document.getElementById('calendarBtnParent');
-      if(btn){
-        btn.classList.add('eventia-revealed');
-        btn.style.setProperty('display','inline-flex','important');
-        btn.style.setProperty('opacity','1','important');
-        btn.style.setProperty('visibility','visible','important');
-      }
-      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},200);
-      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},700);
-      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},1400);
+      if(typeof window.eventiaRevealCalendar==='function') window.eventiaRevealCalendar();
     }
   });
 })();
