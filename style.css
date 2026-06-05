@@ -8296,3 +8296,50 @@ body:not(.eventia-lang-hidden):not(.lang-hidden) #topnav #lang-sw{opacity:1!impo
 
 /* Container vars */
 .es-section,#hero,#rsvp,.story2-block,.date-chapter,.countdown-chapter,.program-chapter,.final-chapter{container-type:inline-size;--cw:100%;--ch:100%;}
+
+/* ============================================================
+   Eventia V45-B — Corrections définitives haute spécificité
+   Toutes règles ici ont (2,1,2)+ et viennent en dernier → WIN
+   ============================================================ */
+
+/* LANG-SW : autorité absolue (2,1,2) — bat tout rule existante max (2,1,1) */
+html body.eventia-show-lang #topnav #lang-sw{
+  display:flex!important;opacity:1!important;visibility:visible!important;
+  pointer-events:auto!important;min-width:80px!important;overflow:visible!important;
+  width:auto!important;border:1px solid rgba(174,126,50,.3)!important;
+}
+html body:not(.eventia-show-lang) #topnav #lang-sw{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  width:0!important;min-width:0!important;overflow:hidden!important;border:0!important;
+}
+
+/* VERSET BIBLIQUE : spécificité (0,2,1) — bat la règle cachante à :7419 (0,2,1) car vient après */
+.story2-citation .story2-cit-text span{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;
+  background:none!important;clip-path:inset(0 0 0 0)!important;
+  transform:none!important;animation:none!important;
+}
+
+/* SHIMMER : renforcement avec fond explicite */
+.h-names,.final-h-names{
+  background:linear-gradient(105deg,#7A4B20 0%,#B99048 18%,#F3D391 34%,#FFF3C1 48%,#C99A45 63%,#8A5B1E 82%,#F3D391 100%)!important;
+  background-size:300% auto!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  animation:eventiaV44Shimmer 4.4s ease-in-out infinite!important;
+}
+
+/* DRESS CODE — spotlights plus beaux, identiques au hero */
+.dress-spot-1,.dress-spot-2{
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,253,235,1) 0%,rgba(255,246,210,.72) 22%,rgba(255,237,178,.38) 48%,rgba(255,224,140,.12) 68%,transparent 80%)!important;
+  filter:blur(14px)!important;mix-blend-mode:screen!important;
+}
+.dress-spot-1{width:42%!important;height:110%!important;}
+.dress-spot-2{width:38%!important;height:100%!important;}
+.dress-spotlights{mix-blend-mode:screen!important;opacity:.88!important;}
+
+/* GRADIENTS DE TRANSITION — sections sans fondu */
+#notre-date::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(50px,8vh,80px);background:linear-gradient(to bottom,transparent,rgba(247,239,227,.8));pointer-events:none;z-index:2;}
+#notre-histoire::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(50px,8vh,80px);background:linear-gradient(to bottom,transparent,rgba(247,239,227,.8));pointer-events:none;z-index:2;}
+#les-lieux::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,transparent,rgba(247,239,227,.7));pointer-events:none;}
