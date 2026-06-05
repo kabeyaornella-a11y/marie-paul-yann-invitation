@@ -8343,3 +8343,28 @@ html body:not(.eventia-show-lang) #topnav #lang-sw{
 #notre-date::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(50px,8vh,80px);background:linear-gradient(to bottom,transparent,rgba(247,239,227,.8));pointer-events:none;z-index:2;}
 #notre-histoire::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(50px,8vh,80px);background:linear-gradient(to bottom,transparent,rgba(247,239,227,.8));pointer-events:none;z-index:2;}
 #les-lieux::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,transparent,rgba(247,239,227,.7));pointer-events:none;}
+
+/* ============================================================
+   Eventia V45-C — Espaces vides + particules dress code
+   Règles ultra-spécifiques placées EN DERNIER → victoire garantie
+   ============================================================ */
+
+/* Dress code — sparkle CSS (réutilise @keyframes heroStarsUpV44) */
+.dress-snow{position:absolute!important;inset:0!important;pointer-events:none!important;z-index:5!important;overflow:hidden!important;mix-blend-mode:screen!important;opacity:.65!important;}
+.dress-snow i{position:absolute!important;bottom:-5%!important;width:5px!important;height:5px!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;filter:none!important;animation:heroStarsUpV44 linear infinite!important;}
+.dress-snow i::before{content:'✦';position:absolute;inset:0;display:block;font-size:clamp(3px,.7vw,5px);line-height:1;color:rgba(255,248,214,.72);text-shadow:0 0 5px rgba(243,213,138,.6),0 0 10px rgba(255,255,255,.25);}
+.dress-snow i:nth-child(3n)::before{content:'✧';font-size:clamp(2.5px,.6vw,4px);}
+.dress-snow i:nth-child(4n)::before{content:'⋆';font-size:clamp(3.5px,.8vw,6px);}
+.dress-snow i:nth-child(5n)::before{content:'✦';font-size:clamp(4px,.9vw,7px);color:rgba(255,240,180,.88);}
+
+/* Suppression des grands espaces vides entre sections */
+/* 1 — Compte à rebours → Notre histoire */
+#compte-a-rebours{padding-bottom:clamp(6px,1.2vh,14px)!important;margin-bottom:0!important;}
+section#notre-histoire,section.story2-chapter{padding-top:clamp(6px,1.2vh,14px)!important;margin-top:0!important;}
+/* 2 — Autour → Empreintes */
+section#autour{padding-bottom:clamp(6px,1.2vh,14px)!important;margin-bottom:0!important;}
+section#empreintes{padding-top:clamp(6px,1.2vh,14px)!important;margin-top:0!important;}
+/* 3 — Empreintes → Cadeaux */
+section#cadeaux{padding-top:clamp(6px,1.2vh,14px)!important;margin-top:0!important;}
+/* 4 — RSVP → Remerciements */
+section#remerciements{padding-top:clamp(16px,3vh,28px)!important;margin-top:0!important;}

@@ -1197,7 +1197,7 @@ function sendRsvp(){
   function forceVerse(){
     var c=q('.story2-citation'), t=q('.story2-cit-text'), ref=q('.story2-cit-ref');
     if(t){
-      t.innerHTML="<span>« Ainsi ils ne sont plus deux, mais une seule chair. »</span><span>Que l’homme donc ne sépare pas ce que Dieu a uni. »</span>";
+      t.innerHTML="<span>« Ainsi ils ne sont plus deux, mais une seule chair.</span><span>Que l’homme donc ne sépare pas ce que Dieu a uni. »</span>";
       t.style.setProperty('display','block','important');t.style.setProperty('visibility','visible','important');t.style.setProperty('opacity','1','important');t.style.setProperty('clip-path','none','important');t.style.setProperty('transform','none','important');
       qa('span',t).forEach(function(s){
         s.style.setProperty('opacity','1','important');s.style.setProperty('clip-path','inset(0 0 0 0)','important');s.style.setProperty('transform','none','important');s.style.setProperty('animation','none','important');
@@ -1227,8 +1227,8 @@ function sendRsvp(){
       snow=document.createElement('div'); snow.className='hero-snow';
       var content=q('.hero-content',hero); hero.insertBefore(snow, content||hero.firstChild);
     }
-    if(snow.children.length<160){
-      for(var i=snow.children.length;i<160;i++){snow.appendChild(document.createElement('i'));}
+    if(snow.children.length<120){
+      for(var i=snow.children.length;i<120;i++){snow.appendChild(document.createElement('i'));}
     }
     qa('i',snow).forEach(function(p){
       p.style.left=(Math.random()*100).toFixed(2)+'%';
@@ -1237,6 +1237,21 @@ function sendRsvp(){
       p.style.setProperty('--extraDur','0s');
       p.style.setProperty('--drift',((Math.random()*44)-22).toFixed(1)+'px');
       p.style.setProperty('opacity',(0.55+Math.random()*0.45).toFixed(2));
+    });
+  }
+
+  function tuneDressStars(){
+    var stage=q('.dress-stage'); if(!stage) return;
+    var snow=q('.dress-snow',stage);
+    if(!snow){snow=document.createElement('div');snow.className='dress-snow';stage.appendChild(snow);}
+    var N=32;
+    if(snow.children.length<N){for(var i=snow.children.length;i<N;i++){snow.appendChild(document.createElement('i'));}}
+    qa('i',snow).forEach(function(p){
+      p.style.left=(Math.random()*100).toFixed(2)+'%';
+      p.style.setProperty('animation-duration',(8+Math.random()*14).toFixed(1)+'s','important');
+      p.style.animationDelay=(-Math.random()*16).toFixed(2)+'s';
+      p.style.setProperty('--drift',((Math.random()*30)-15).toFixed(1)+'px');
+      p.style.setProperty('opacity',(0.35+Math.random()*0.5).toFixed(2));
     });
   }
 
@@ -1321,8 +1336,8 @@ function sendRsvp(){
   window.setLang._eventiaV44=true;
 
   ready(function(){
-    updateContainerVars(); forceVerse(); forceShimmer(); tuneHeroStars(); wireRsvp(); addCalendarButton(); normalizeTextPunctuation(); improveLoading();
-    setTimeout(function(){forceVerse();forceShimmer();tuneHeroStars();},500);
+    updateContainerVars(); forceVerse(); forceShimmer(); tuneHeroStars(); tuneDressStars(); wireRsvp(); addCalendarButton(); normalizeTextPunctuation(); improveLoading();
+    setTimeout(function(){forceVerse();forceShimmer();tuneHeroStars();tuneDressStars();},500);
     setTimeout(function(){forceVerse();forceShimmer();updateContainerVars();},1400);
   });
   window.addEventListener('resize',function(){updateContainerVars();},{passive:true});
