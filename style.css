@@ -8638,3 +8638,77 @@ section#hebergements .c3-wrap{overflow:visible!important;}
   pointer-events:none!important;z-index:99999!important;
   overflow:visible!important;
 }
+
+
+/* ===== PATCH V48 — Correctifs définitifs ===== */
+
+/* 1. Texte intro hero — agrandi */
+#hero #txt-intro,#hero .h-intro{
+  font-size:clamp(11px,2.6vw,19px)!important;
+  letter-spacing:.13em!important;
+  width:76vw!important;max-width:76vw!important;
+}
+@media(max-width:430px){
+  #hero #txt-intro,#hero .h-intro{
+    font-size:clamp(10px,3vw,14px)!important;
+    width:82vw!important;max-width:82vw!important;
+  }
+}
+
+/* 2. Shimmer prénoms — keyframe propre + suppression totale des overlays */
+@keyframes shimmerV48{
+  from{background-position:0% center}
+  to{background-position:300% center}
+}
+#hero .h-names,.h-names,
+#photo-finale .final-h-names,.final-h-names{
+  font-family:'ChopinScript','Great Vibes',cursive!important;
+  background:linear-gradient(to right,
+    #7A4B20 0%,#C49A45 15%,#F5DD8E 28%,#FFFAE8 42%,
+    #F5DD8E 56%,#C49A45 70%,#7A4B20 84%,#C49A45 100%
+  )!important;
+  background-size:300% 100%!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  color:transparent!important;
+  animation:shimmerV48 3.2s linear infinite!important;
+  will-change:background-position!important;
+  text-shadow:none!important;
+  position:relative!important;
+}
+#hero .h-names::before,#hero .h-names::after,
+.h-names::before,.h-names::after,
+#photo-finale .final-h-names::before,#photo-finale .final-h-names::after,
+.final-h-names::before,.final-h-names::after{
+  display:none!important;content:none!important;animation:none!important;
+}
+
+/* 3. Overlays beiges — suppression définitive */
+#dresscode::before,#dresscode::after,
+section#dresscode::before,section#dresscode::after,
+#hebergements::before,#hebergements::after,
+section#hebergements::before,section#hebergements::after{
+  display:none!important;content:none!important;background:none!important;
+}
+
+/* 4. Hébergements overflow — chaîne complète */
+#hebergements,section#hebergements,
+#hebergements>.es-inner,
+#hebergements .c3-wrap,
+#stay-wrap{
+  overflow:visible!important;
+}
+
+/* 5. Espace RSVP → Remerciements — correction aggressive */
+#rsvp.rsvp-chapter{
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+#remerciements,section#remerciements{
+  margin-top:-320px!important;
+  position:relative!important;
+  z-index:10!important;
+  background:#F7EFE3!important;
+  padding-top:clamp(44px,8vh,80px)!important;
+}

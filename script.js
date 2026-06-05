@@ -1876,3 +1876,242 @@ function sendRsvp(){
   })();
 
 })();
+
+/* ===== PATCH V48 — Correctifs définitifs ===== */
+(function(){
+  'use strict';
+
+  /* ─── 1. SHIMMER — GPU + will-change via inline !important ─── */
+  (function(){
+    function boost(){
+      document.querySelectorAll('.h-names,.final-h-names').forEach(function(el){
+        el.style.setProperty('will-change','background-position','important');
+        el.style.setProperty('animation','shimmerV48 3.2s linear infinite','important');
+        el.style.setProperty('-webkit-background-clip','text','important');
+        el.style.setProperty('background-clip','text','important');
+        el.style.setProperty('-webkit-text-fill-color','transparent','important');
+        el.style.setProperty('color','transparent','important');
+        /* Supprimer tout ::after inline résiduel (impossible via JS mais on vide le content) */
+      });
+    }
+    setTimeout(boost,80);
+    setTimeout(boost,500);
+    setTimeout(boost,1600);
+  })();
+
+  /* ─── 2 & 3. CAROUSELS — inits après tous les patches précédents (2100ms) ─── */
+  setTimeout(function(){
+
+    /* === HÉBERGEMENT === */
+    (function(){
+      var wrap=document.getElementById('stay-wrap');
+      var navEl=document.querySelector('#hebergements .c3-nav') || document.getElementById('stay-nav');
+      if(!wrap||!navEl) return;
+
+      /* Overflow visible sur toute la chaîne */
+      var heb=document.getElementById('hebergements');
+      if(heb){
+        heb.style.setProperty('overflow','visible','important');
+        var inner=heb.querySelector('.es-inner');
+        if(inner) inner.style.setProperty('overflow','visible','important');
+      }
+      wrap.style.setProperty('overflow','visible','important');
+
+      var ITEMS=[].slice.call(wrap.querySelectorAll('.c3-item'));
+      var N=ITEMS.length;
+      if(!N) return;
+
+      /* Remplacer nav = supprimer TOUS les listeners V46/V47 */
+      var fresh=navEl.cloneNode(true);
+      navEl.parentNode.replaceChild(fresh,navEl);
+      var DOTS=[].slice.call(fresh.querySelectorAll('.c3-dot'));
+      var cur=0;
+
+      function renderV48(){
+        var prev=(cur-1+N)%N, next=(cur+1)%N;
+        ITEMS.forEach(function(item,i){
+          var p=item.style;
+          item.classList.remove('is-active','is-prev','is-next','is-hidden');
+          p.setProperty('position','absolute','important');
+          p.setProperty('top','50%','important');
+          p.setProperty('left','50%','important');
+          p.setProperty('width','clamp(220px,58vw,360px)','important');
+          p.setProperty('cursor','pointer','important');
+          p.setProperty('transition','all .55s cubic-bezier(.25,.46,.45,.94)','important');
+          p.setProperty('transform-origin','center center','important');
+          if(i===cur){
+            item.classList.add('is-active');
+            p.setProperty('transform','translate(-50%,-50%) scale(1) translateZ(0)','important');
+            p.setProperty('z-index','10','important');
+            p.setProperty('opacity','1','important');
+            p.setProperty('filter','none','important');
+            p.setProperty('pointer-events','auto','important');
+          } else if(i===prev){
+            item.classList.add('is-prev');
+            p.setProperty('transform','translate(-112%,-50%) scale(.7) translateZ(-100px) rotateY(16deg)','important');
+            p.setProperty('z-index','5','important');
+            p.setProperty('opacity','.55','important');
+            p.setProperty('filter','brightness(.76) saturate(.62)','important');
+            p.setProperty('pointer-events','auto','important');
+          } else if(i===next){
+            item.classList.add('is-next');
+            p.setProperty('transform','translate(12%,-50%) scale(.7) translateZ(-100px) rotateY(-16deg)','important');
+            p.setProperty('z-index','5','important');
+            p.setProperty('opacity','.55','important');
+            p.setProperty('filter','brightness(.76) saturate(.62)','important');
+            p.setProperty('pointer-events','auto','important');
+          } else {
+            item.classList.add('is-hidden');
+            p.setProperty('transform','translate(-50%,-50%) scale(.4) translateZ(-260px)','important');
+            p.setProperty('z-index','1','important');
+            p.setProperty('opacity','0','important');
+            p.setProperty('filter','none','important');
+            p.setProperty('pointer-events','none','important');
+          }
+        });
+        DOTS.forEach(function(d,i){
+          d.style.setProperty('background',i===cur?'#B99048':'rgba(183,143,67,.22)','important');
+          d.style.setProperty('transform',i===cur?'scale(1.35)':'scale(1)','important');
+        });
+      }
+
+      fresh.querySelectorAll('.c3-arrow').forEach(function(btn){
+        btn.addEventListener('click',function(e){
+          e.stopPropagation();
+          cur=btn.getAttribute('data-dir')==='prev'?(cur-1+N)%N:(cur+1)%N;
+          renderV48();
+        });
+      });
+      DOTS.forEach(function(dot,i){
+        dot.addEventListener('click',function(e){
+          e.stopPropagation();
+          cur=i; renderV48();
+        });
+      });
+      /* Swipe */
+      var sx=0;
+      wrap.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+      wrap.addEventListener('touchend',function(e){
+        var dx=e.changedTouches[0].clientX-sx;
+        if(Math.abs(dx)>40){cur=dx<0?(cur+1)%N:(cur-1+N)%N;renderV48();}
+      },{passive:true});
+
+      renderV48();
+    })();
+
+    /* === ACTIVITÉS === */
+    (function(){
+      var root=document.querySelector('.es-activities-option3');
+      if(!root) return;
+      var images=[].slice.call(root.querySelectorAll('.es-act-panorama img'));
+      var sel=root.querySelector('.es-act-selector');
+      if(!sel) return;
+
+      var fresh=sel.cloneNode(true);
+      sel.parentNode.replaceChild(fresh,sel);
+      var buttons=[].slice.call(fresh.querySelectorAll('button'));
+      var curKey='fontainebleau';
+
+      var INFO={
+        fontainebleau:{tag:'Patrimoine',title:'Château de Fontainebleau',text:'Un incontournable royal, entre jardins majestueux, galeries historiques et architecture remarquable.'},
+        foret:{tag:'Nature',title:'Forêt de Fontainebleau',text:'Une parenthèse paisible pour se promener, respirer et découvrir les paysages emblématiques de la région.'},
+        parrot:{tag:'Famille',title:'Parrot World',text:'Une expérience immersive et colorée, parfaite pour les familles et les amoureux de la nature.'}
+      };
+
+      function activateV48(key){
+        curKey=key;
+        images.forEach(function(img){
+          var a=img.getAttribute('data-act-img')===key;
+          var p=img.style;
+          p.setProperty('position','absolute','important');
+          p.setProperty('inset','0','important');
+          p.setProperty('width','100%','important');
+          p.setProperty('height','100%','important');
+          p.setProperty('object-fit','cover','important');
+          p.setProperty('opacity',a?'1':'0','important');
+          p.setProperty('z-index',a?'2':'0','important');
+          p.setProperty('transition','opacity .65s ease','important');
+          p.setProperty('pointer-events',a?'auto':'none','important');
+          a?img.classList.add('active'):img.classList.remove('active');
+        });
+        buttons.forEach(function(btn){
+          var a=btn.getAttribute('data-act-place')===key;
+          a?btn.classList.add('active'):btn.classList.remove('active');
+        });
+        var d=INFO[key]; if(!d) return;
+        var tag=document.getElementById('esActTag'),title=document.getElementById('esActTitle'),text=document.getElementById('esActText');
+        if(tag) tag.textContent=d.tag;
+        if(title) title.textContent=d.title;
+        if(text) text.textContent=d.text;
+      }
+
+      buttons.forEach(function(btn){
+        btn.addEventListener('click',function(e){
+          e.stopPropagation();
+          var key=btn.getAttribute('data-act-place');
+          if(key) activateV48(key);
+        });
+      });
+
+      activateV48(curKey);
+    })();
+
+  }, 2100);
+
+  /* ─── 4. BOUTON CALENDRIER — setProperty !important + fallback 30s ─── */
+  (function(){
+    function revealV48(){
+      var btn=document.getElementById('calendarBtnParent');
+      if(!btn) return;
+      var p=btn.style;
+      p.setProperty('display','inline-flex','important');
+      p.setProperty('opacity','1','important');
+      p.setProperty('visibility','visible','important');
+      p.setProperty('pointer-events','auto','important');
+      p.setProperty('margin-top','20px','important');
+      p.setProperty('max-width','none','important');
+      btn.classList.add('eventia-revealed');
+    }
+
+    /* Override définitif — prend le dessus sur tous les patches précédents */
+    window.eventiaRevealCalendar=revealV48;
+
+    window.addEventListener('message',function(e){
+      if(!e||!e.data) return;
+      var t=e.data.type,a=e.data.action;
+      if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
+        revealV48();
+        setTimeout(revealV48,100);
+        if(typeof window.eventiaFinalConfetti==='function'){
+          setTimeout(window.eventiaFinalConfetti,350);
+          setTimeout(window.eventiaFinalConfetti,1100);
+        }
+      }
+    });
+
+    /* Fallback absolu : révélation garantie après 30s */
+    setTimeout(revealV48,30000);
+  })();
+
+  /* ─── 5. RSVP CONFETTI — déclencheur direct sur radio input ─── */
+  (function(){
+    setTimeout(function(){
+      document.querySelectorAll('#rsvp input[name="presence"]').forEach(function(inp){
+        if(inp._v48) return; inp._v48=true;
+        inp.addEventListener('change',function(){
+          if(inp.value==='oui'&&inp.checked){
+            if(typeof window.launchRsvpConfetti==='function') window.launchRsvpConfetti();
+            else if(typeof window.eventiaFastConfettiLayer==='function'){
+              var r=document.getElementById('rsvp');
+              var rect=r?r.getBoundingClientRect():{left:window.innerWidth*.1,top:window.innerHeight*.3,width:window.innerWidth*.8,height:200};
+              window.eventiaFastConfettiLayer(rect.left+rect.width*.5,rect.top+rect.height*.35,80);
+              setTimeout(function(){window.eventiaFastConfettiLayer(rect.left+rect.width*.3,rect.top+rect.height*.25,50);},130);
+              setTimeout(function(){window.eventiaFastConfettiLayer(rect.left+rect.width*.7,rect.top+rect.height*.25,50);},250);
+            }
+          }
+        });
+      });
+    }, 2200);
+  })();
+
+})();
