@@ -956,7 +956,11 @@ function finishMedal(medalEl, idx) {
   launchMedalConfettiBurst(cx, cy);
   doneCount++;
 
+  if (doneCount === 1) {
+    try { window.parent.postMessage({type:'eventia-scratch-start'}, '*'); } catch(e) {}
+  }
   if (doneCount === 3) {
+    try { window.parent.postMessage({type:'eventia-scratch-complete'}, '*'); } catch(e) {}
     setTimeout(function(){
       document.getElementById('medals').classList.add('hide');
       setTimeout(function(){
