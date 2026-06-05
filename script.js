@@ -1560,3 +1560,319 @@ function sendRsvp(){
   })();
 
 })();
+
+
+/* ===== PATCH V47 — Corrections définitives ===== */
+(function(){
+  'use strict';
+
+  function whenReady(fn){
+    if(document.readyState==='complete'||document.readyState==='interactive') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  /* ─── 1. HÉBERGEMENT CARROUSEL — réinitialisation complète avec styles inline ─── */
+  (function(){
+    var ITEMS, DOTS, N=0, cur=0;
+
+    function renderCarousel(){
+      if(!ITEMS||!N) return;
+      var prev=(cur-1+N)%N, next=(cur+1)%N;
+      var base='position:absolute;top:50%;width:clamp(220px,58vw,360px);cursor:pointer;transform-origin:center center;-webkit-tap-highlight-color:transparent;transition:all .55s cubic-bezier(.25,.46,.45,.94);';
+      ITEMS.forEach(function(item,i){
+        if(i===cur)
+          item.setAttribute('style',base+'left:50%;transform:translate(-50%,-50%) scale(1) translateZ(0);z-index:10;opacity:1;filter:none;');
+        else if(i===prev)
+          item.setAttribute('style',base+'left:50%;transform:translate(-112%,-50%) scale(.7) translateZ(-100px) rotateY(16deg);z-index:5;opacity:.55;filter:brightness(.76) saturate(.62);');
+        else if(i===next)
+          item.setAttribute('style',base+'left:50%;transform:translate(12%,-50%) scale(.7) translateZ(-100px) rotateY(-16deg);z-index:5;opacity:.55;filter:brightness(.76) saturate(.62);');
+        else
+          item.setAttribute('style',base+'left:50%;transform:translate(-50%,-50%) scale(.4) translateZ(-260px);z-index:1;opacity:0;pointer-events:none;');
+      });
+      if(DOTS) DOTS.forEach(function(d,i){
+        d.style.background=i===cur?'#B99048':'rgba(183,143,67,.22)';
+        d.style.transform=i===cur?'scale(1.35)':'scale(1)';
+      });
+    }
+
+    function initCarousel(){
+      var wrap=document.getElementById('stay-wrap');
+      var navEl=document.getElementById('stay-nav');
+      if(!wrap||!navEl) return;
+
+      /* Force overflow visible sur toute la chaîne parente */
+      var chain=['stay-wrap','hebergements'];
+      chain.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el) el.style.setProperty('overflow','visible','important');
+      });
+      var inner=wrap.closest('.es-inner');
+      if(inner) inner.style.setProperty('overflow','visible','important');
+
+      ITEMS=[].slice.call(wrap.querySelectorAll('.c3-item'));
+      N=ITEMS.length;
+      if(!N) return;
+
+      /* Remplacer nav pour supprimer anciens listeners */
+      var newNav=navEl.cloneNode(true);
+      navEl.parentNode.replaceChild(newNav,navEl);
+      DOTS=[].slice.call(newNav.querySelectorAll('.c3-dot'));
+
+      newNav.querySelectorAll('.c3-arrow').forEach(function(btn){
+        btn.addEventListener('click',function(e){
+          e.stopPropagation();
+          cur=btn.getAttribute('data-dir')==='prev'?(cur-1+N)%N:(cur+1)%N;
+          renderCarousel();
+        });
+      });
+      DOTS.forEach(function(dot,i){
+        dot.addEventListener('click',function(e){
+          e.stopPropagation();
+          cur=i; renderCarousel();
+        });
+      });
+
+      /* Swipe tactile */
+      var sx=0;
+      wrap.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+      wrap.addEventListener('touchend',function(e){
+        var dx=e.changedTouches[0].clientX-sx;
+        if(Math.abs(dx)>40){cur=dx<0?(cur+1)%N:(cur-1+N)%N;renderCarousel();}
+      },{passive:true});
+
+      renderCarousel();
+    }
+
+    whenReady(function(){
+      initCarousel();
+      setTimeout(initCarousel,600);
+      setTimeout(initCarousel,1400);
+    });
+  })();
+
+  /* ─── 2. ACTIVITÉS CARROUSEL — réinitialisation complète avec styles inline ─── */
+  (function(){
+    var root,images,buttons,currentKey='fontainebleau';
+    var INFO={
+      fontainebleau:{tag:'Patrimoine',title:'Château de Fontainebleau',text:'Un incontournable royal, entre jardins majestueux, galeries historiques et architecture remarquable.'},
+      foret:{tag:'Nature',title:'Forêt de Fontainebleau',text:'Une parenthèse paisible pour se promener, respirer et découvrir les paysages emblématiques de la région.'},
+      parrot:{tag:'Famille',title:'Parrot World',text:'Une expérience immersive et colorée, parfaite pour les familles et les amoureux de la nature.'}
+    };
+
+    function activateV47(key){
+      currentKey=key;
+      if(images) images.forEach(function(img){
+        var a=img.getAttribute('data-act-img')===key;
+        img.setAttribute('style',
+          'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;'+
+          'opacity:'+(a?'1':'0')+';z-index:'+(a?'2':'0')+';'+
+          'transition:opacity .65s ease;pointer-events:'+(a?'auto':'none')+';'
+        );
+        a?img.classList.add('active'):img.classList.remove('active');
+      });
+      if(buttons) buttons.forEach(function(btn){
+        var a=btn.getAttribute('data-act-place')===key;
+        a?btn.classList.add('active'):btn.classList.remove('active');
+      });
+      var d=INFO[key]; if(!d) return;
+      var tag=document.getElementById('esActTag'),title=document.getElementById('esActTitle'),text=document.getElementById('esActText');
+      if(tag) tag.textContent=d.tag;
+      if(title) title.textContent=d.title;
+      if(text) text.textContent=d.text;
+    }
+
+    function initActivities(){
+      root=document.querySelector('.es-activities-option3');
+      if(!root) return;
+      images=[].slice.call(root.querySelectorAll('.es-act-panorama img'));
+
+      /* Remplacer sélecteur pour supprimer anciens listeners */
+      var sel=root.querySelector('.es-act-selector');
+      if(sel){
+        var newSel=sel.cloneNode(true);
+        sel.parentNode.replaceChild(newSel,sel);
+        buttons=[].slice.call(newSel.querySelectorAll('button'));
+        buttons.forEach(function(btn){
+          btn.addEventListener('click',function(e){
+            e.stopPropagation();
+            var key=btn.getAttribute('data-act-place');
+            if(key) activateV47(key);
+          });
+        });
+      } else {
+        buttons=[].slice.call(root.querySelectorAll('.es-act-selector button'));
+      }
+      activateV47(currentKey);
+    }
+
+    whenReady(function(){
+      initActivities();
+      setTimeout(initActivities,600);
+      setTimeout(initActivities,1400);
+    });
+  })();
+
+  /* ─── 3. BOUTON CALENDRIER — révélation inline style (priorité maximale) ─── */
+  (function(){
+    function revealCalBtn(){
+      var btn=document.getElementById('calendarBtnParent');
+      if(!btn) return;
+      /* setProperty avec 'important' = inline !important = priorité absolue sur toute règle CSS */
+      btn.style.setProperty('display','inline-flex','important');
+      btn.style.setProperty('opacity','1','important');
+      btn.style.setProperty('visibility','visible','important');
+      btn.style.setProperty('pointer-events','auto','important');
+      btn.style.setProperty('margin-top','20px','important');
+      btn.style.setProperty('max-width','none','important');
+      btn.classList.add('eventia-revealed');
+      /* Ceinture et bretelles : <style> tag également */
+      if(!document.getElementById('v47-cal-style')){
+        var st=document.createElement('style');
+        st.id='v47-cal-style';
+        st.textContent='#calendarBtnParent{display:inline-flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;margin-top:20px!important;}';
+        document.head.appendChild(st);
+      }
+      /* Confetti final */
+      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},300);
+      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},900);
+    }
+
+    window.eventiaRevealCalendar=revealCalBtn;
+
+    window.addEventListener('message',function(e){
+      if(!e||!e.data) return;
+      var t=e.data.type,a=e.data.action;
+      if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
+        setTimeout(revealCalBtn,50);
+      }
+    });
+  })();
+
+  /* ─── 4. CONFETTI FINAL — implémentation autonome (fix bug V46) ─── */
+  (function(){
+    var COLS=['#D4A843','#E8C878','#FFF2B0','#B8860B','#FFE566','#C0392B','#FFFFFF','#F9A825'];
+
+    function burstAt(cx,cy,count){
+      var layer=document.createElement('div');
+      layer.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99998;overflow:visible;';
+      document.body.appendChild(layer);
+      for(var i=0;i<count;i++){
+        (function(){
+          var piece=document.createElement('div');
+          var angle=Math.random()*Math.PI*2;
+          var speed=3+Math.random()*5;
+          var tx=Math.cos(angle)*speed*(30+Math.random()*90);
+          var ty=Math.sin(angle)*speed*(20+Math.random()*70)-60;
+          var rot=(Math.random()-.5)*720;
+          var size=4+Math.random()*7;
+          var color=COLS[Math.floor(Math.random()*COLS.length)];
+          var delay=Math.random()*200;
+          var dur=500+Math.random()*300;
+          piece.style.cssText=[
+            'position:absolute',
+            'left:'+(cx-size/2)+'px',
+            'top:'+(cy-size/2)+'px',
+            'width:'+size+'px',
+            'height:'+(size*1.7)+'px',
+            'background:'+color,
+            'border-radius:2px',
+            'opacity:0',
+            'transform:translate(0,0) rotate(0deg)',
+            'transition:transform '+dur+'ms ease-out '+delay+'ms,opacity '+(dur*.8)+'ms ease-out '+delay+'ms'
+          ].join(';');
+          layer.appendChild(piece);
+          requestAnimationFrame(function(){
+            requestAnimationFrame(function(){
+              piece.style.opacity='1';
+              piece.style.transform='translate('+tx+'px,'+ty+'px) rotate('+rot+'deg)';
+              setTimeout(function(){
+                piece.style.opacity='0';
+                setTimeout(function(){try{piece.remove();}catch(e){}},500);
+              },delay+dur*.6);
+            });
+          });
+        })();
+      }
+      setTimeout(function(){try{layer.remove();}catch(e){}},1800);
+    }
+
+    window.eventiaFastConfettiLayer=burstAt;
+
+    window.eventiaFinalConfetti=function(){
+      var pts=[[.18,.42],[.5,.28],[.82,.42],[.34,.62],[.66,.62]];
+      [0,80,200].forEach(function(delay){
+        setTimeout(function(){
+          pts.forEach(function(p,i){
+            setTimeout(function(){burstAt(innerWidth*p[0],innerHeight*p[1],45);},i*10);
+          });
+        },delay);
+      });
+    };
+  })();
+
+  /* ─── 5. RSVP CONFETTI — implémentation autonome V47 ─── */
+  (function(){
+    var COLS=['#D4A843','#E8C878','#FFF2B0','#B8860B','#FFE566','#FFFFFF','#F9A825'];
+
+    function fireRsvpConfettiV47(){
+      /* Utilise la couche de confetti rapide si disponible */
+      if(typeof window.eventiaFastConfettiLayer==='function'){
+        var rsvp=document.getElementById('rsvp');
+        var rect=rsvp?rsvp.getBoundingClientRect():{left:innerWidth*.1,top:innerHeight*.3,width:innerWidth*.8,height:200};
+        var cx=rect.left+rect.width*.5, cy=rect.top+rect.height*.3;
+        window.eventiaFastConfettiLayer(cx,cy,80);
+        setTimeout(function(){window.eventiaFastConfettiLayer(cx-60,cy-20,55);},120);
+        setTimeout(function(){window.eventiaFastConfettiLayer(cx+60,cy-20,55);},230);
+        return;
+      }
+      /* Fallback DOM injection */
+      var container=document.querySelector('.rsvp-confetti');
+      if(!container){
+        container=document.createElement('div');
+        container.className='rsvp-confetti';
+        document.body.appendChild(container);
+      }
+      container.innerHTML='';
+      for(var i=0;i<80;i++){
+        var p=document.createElement('div');
+        p.className='rsvp-confetti-piece';
+        var tx=(Math.random()-.5)*340, ty=80+Math.random()*200;
+        var rot=(Math.random()-.5)*720, sc=.4+Math.random()*.6;
+        var color=COLS[Math.floor(Math.random()*COLS.length)];
+        var dur=450+Math.floor(Math.random()*450), delay=Math.floor(Math.random()*350);
+        var s=(3+Math.floor(Math.random()*5))+'px', h=(6+Math.floor(Math.random()*10))+'px';
+        p.style.cssText=[
+          '--tx:'+tx+'px','--ty:'+ty+'px','--rot:'+rot+'deg','--sc:'+sc,
+          '--c:'+color,'--dur:'+dur+'ms','--delay:'+delay+'ms',
+          '--s:'+s,'--h:'+h,'--r:'+(Math.random()>.5?'50%':'2px'),
+          'left:'+(30+Math.random()*40)+'%','top:'+(30+Math.random()*20)+'%'
+        ].join(';');
+        container.appendChild(p);
+      }
+      setTimeout(function(){container.innerHTML='';},1500);
+    }
+
+    window.launchRsvpConfetti=fireRsvpConfettiV47;
+
+    whenReady(function(){
+      function attach(){
+        document.querySelectorAll('#rsvp .presence-pill').forEach(function(label){
+          if(label._v47) return; label._v47=true;
+          function check(){
+            var inp=label.querySelector('input[value="oui"]');
+            if(inp&&inp.checked) fireRsvpConfettiV47();
+          }
+          label.addEventListener('click',function(){setTimeout(check,60);});
+          label.addEventListener('touchend',function(){setTimeout(check,60);},{passive:true});
+        });
+        document.querySelectorAll('#rsvp input[name="presence"][value="oui"]').forEach(function(inp){
+          if(inp._v47) return; inp._v47=true;
+          inp.addEventListener('change',function(){if(inp.checked) fireRsvpConfettiV47();});
+        });
+      }
+      attach();
+      setTimeout(attach,1200);
+    });
+  })();
+
+})();

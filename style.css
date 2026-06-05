@@ -8537,3 +8537,104 @@ section#rsvp::before{content:'';position:absolute;top:0;left:0;right:0;height:65
 /* ── 10. SCROLL REVEAL — amélioration animations entrée */
 .es-reveal{opacity:0;transform:translateY(22px);transition:opacity .58s ease,transform .58s ease;}
 .es-visible{opacity:1!important;transform:translateY(0)!important;}
+
+/* ============================================================
+   Eventia V47 — Corrections ciblées post-V46
+   ============================================================ */
+
+/* 1. SHIMMER — supprimer le pseudo-element ::after qui s'affichait AU-DESSUS des lettres */
+.h-names::after,.final-h-names::after{
+  display:none!important;
+  content:none!important;
+  animation:none!important;
+}
+/* Renforcer le shimmer d'origine à l'intérieur des lettres */
+.h-names,.final-h-names{
+  background:linear-gradient(to right,#6A3810 0%,#B08040 10%,#EFD080 22%,#FFF9D4 35%,#EFD080 48%,#B08040 60%,#6A3810 72%,#C89A45 86%,#6A3810 100%)!important;
+  background-size:350% 100%!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  animation:eventiaV44Shimmer 2.8s linear infinite!important;
+  will-change:background-position!important;
+  position:relative!important;overflow:visible!important;
+}
+
+/* 2. ESPACES VIDES — RSVP→Remerciements : pull-up plus fort */
+section#remerciements{
+  margin-top:-200px!important;
+  padding-top:clamp(28px,5vh,48px)!important;
+  position:relative!important;
+  z-index:3!important;
+}
+
+/* 3. ESPACES VIDES — Countdown→Notre histoire */
+section#compte-a-rebours{padding-bottom:0!important;margin-bottom:0!important;}
+section#notre-histoire,section.story2-chapter{
+  padding-top:clamp(12px,2.5vh,24px)!important;
+  margin-top:0!important;
+}
+
+/* 4. DRESS CODE — titre non coupé, padding suffisant */
+section#dresscode{
+  overflow:visible!important;
+  padding-top:clamp(40px,6vh,70px)!important;
+  margin-top:0!important;
+}
+section#dresscode .es-kicker,
+section#dresscode .es-title{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  overflow:visible!important;
+}
+
+/* 5. KICKERS — style harmonisé et toujours visible */
+.es-kicker,.section-kicker{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  color:#A77A35!important;
+  -webkit-text-fill-color:#A77A35!important;
+  background:none!important;
+  font-family:'Cinzel','Tenor Sans',serif!important;
+  font-size:clamp(9.5px,1.9vw,11.5px)!important;
+  letter-spacing:.44em!important;
+  text-transform:uppercase!important;
+  margin-bottom:12px!important;
+  font-weight:500!important;
+}
+
+/* 6. SECTIONS — overflow:visible pour éviter le clipping des kickers */
+section#hebergements,section#notre-date,section#remerciements{
+  overflow:visible!important;
+}
+/* Programme : pas trop peu de padding en bas avant le dress code */
+section#programme{padding-bottom:clamp(12px,2vh,24px)!important;margin-bottom:0!important;}
+
+/* 7. HÉBERGEMENT — les c3-items doivent être visibles même hors-limites */
+section#hebergements .c3-wrap{overflow:visible!important;}
+#hebergements{overflow:visible!important;}
+
+/* 8. RSVP CONFETTI — pièces colorées (animation unifiée V47) */
+@keyframes rsvpV47{
+  0%  {transform:translate3d(0,0,0) rotate(0deg) scale(.35);opacity:0}
+  8%  {opacity:1}
+  82% {opacity:.8}
+  100%{transform:translate3d(var(--tx,0px),var(--ty,110px),0) rotate(var(--rot,360deg)) scale(var(--sc,.6));opacity:0}
+}
+.rsvp-confetti-piece{
+  position:absolute!important;
+  background:var(--c,#d8ae67)!important;
+  width:var(--s,6px)!important;height:var(--h,10px)!important;
+  border-radius:var(--r,2px)!important;
+  box-shadow:0 0 7px rgba(255,234,180,.5)!important;
+  opacity:0!important;
+  animation:rsvpV47 var(--dur,650ms) ease-out var(--delay,0ms) forwards!important;
+}
+.rsvp-confetti{
+  position:fixed!important;inset:0!important;
+  pointer-events:none!important;z-index:99999!important;
+  overflow:visible!important;
+}
