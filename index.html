@@ -513,14 +513,17 @@ body.eventia-lang-hidden #topnav #lang-sw,body.eventia-hide-lang #topnav #lang-s
 .gifts-accord{gap:14px!important;display:grid!important;margin-top:clamp(18px,3vh,28px)!important;}
 .gift-accord-item{border-radius:18px!important;background:rgba(255,249,238,.54)!important;box-shadow:0 14px 34px rgba(105,70,32,.05)!important;overflow:hidden!important;border:1px solid rgba(185,144,72,.14)!important;}
 .gift-accord-header{min-height:70px!important;padding:16px 20px!important;align-items:center!important;}
-.gift-accord-content.open{padding:0 22px 22px!important;}
-.gift-accord-content p{max-width:470px!important;margin:0 auto 16px!important;line-height:1.55!important;color:#5C3D26!important;}
+.gift-accord-body.open{padding:14px 22px 22px!important;}
+.gift-accord-body p{max-width:470px!important;margin:0 auto 16px!important;line-height:1.55!important;color:#5C3D26!important;}
 /* Calendrier */
 .eventia-calendar-btn,.cal-btn{border-radius:999px!important;padding:8px 18px!important;font-size:clamp(10px,2.5vw,13px)!important;letter-spacing:.16em!important;min-height:36px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 7px rgba(42,23,4,.38)!important;background:linear-gradient(135deg,#C79A44 0%,#A56B1B 55%,#E6C979 100%)!important;box-shadow:0 10px 28px rgba(150,95,22,.26), inset 0 0 0 1px rgba(255,239,188,.45)!important;text-decoration:none!important;margin:10px auto 0!important;}
 /* Harmonisation textes, sans changer les prénoms script */
-.es-copy,.story2-para,.c3-desc,.act-copy,.gift-accord-content p,.thanks-copy-main,.thanks-copy-sub{font-family:'Cormorant Garamond',serif!important;color:#5C3D26!important;-webkit-text-fill-color:#5C3D26!important;}
+.es-copy,.story2-para,.c3-desc,.act-copy,.gift-accord-body p,.thanks-copy-main,.thanks-copy-sub{font-family:'Cormorant Garamond',serif!important;color:#5C3D26!important;-webkit-text-fill-color:#5C3D26!important;}
 .es-title,.countdown-title,.story2-main-title,.places-card-title,.c3-name,.act-name{color:#452819!important;-webkit-text-fill-color:#452819!important;}
 .thanks-copy-main,.thanks-copy-sub{color:#5C3D26!important;-webkit-text-fill-color:#5C3D26!important;opacity:1!important;}
+/* Bouton calendrier : caché par défaut, révélé après grattage des médaillons */
+#calendarBtnParent{display:none!important;opacity:0;transition:opacity .5s ease;}
+#calendarBtnParent.eventia-revealed{display:inline-flex!important;opacity:1;}
 /* Responsive conteneur : variables disponibles pour placements JS/CSS */
 .es-section,#hero,#rsvp,.story2-block,.date-chapter,.countdown-chapter,.program-chapter,.final-chapter{container-type:inline-size;--cw:100%;--ch:100%;}
 /* Bouton langue — autorité absolue (2,2,1) — dépasse tous les masquages (max 2,1,1) */

@@ -1309,7 +1309,17 @@ function sendRsvp(){
     setTimeout(function(){forceVerse();forceShimmer();updateContainerVars();},1400);
   });
   window.addEventListener('resize',function(){updateContainerVars();},{passive:true});
-  window.addEventListener('message',function(e){ if(e.data && e.data.type==='eventia-scratch-complete') setTimeout(finalConfetti,520); });
+  window.addEventListener('message',function(e){
+    if(!e.data) return;
+    var t=e.data.type, a=e.data.action;
+    if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
+      var btn=document.getElementById('calendarBtnParent');
+      if(btn) btn.classList.add('eventia-revealed');
+      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},200);
+      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},700);
+      setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},1400);
+    }
+  });
 })();
 
 
