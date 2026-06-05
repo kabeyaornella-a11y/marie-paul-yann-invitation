@@ -1325,7 +1325,18 @@ function sendRsvp(){
     document.body.classList.toggle('eventia-show-lang',   !hidden);
     var nav = document.getElementById('topnav');
     if (nav) nav.classList.toggle('eventia-lang-hidden', hidden);
+    var langSw = document.getElementById('lang-sw');
+    if (langSw) {
+      langSw.style.setProperty('opacity',        hidden ? '0' : '1',       'important');
+      langSw.style.setProperty('visibility',     hidden ? 'hidden' : 'visible', 'important');
+      langSw.style.setProperty('pointer-events', hidden ? 'none' : 'auto', 'important');
+      langSw.style.setProperty('display',        'flex',                    'important');
+    }
   }
   window.addEventListener('scroll', syncLang, {passive: true});
-  ready(function() { syncLang(); });
+  ready(function() {
+    var langSw = document.getElementById('lang-sw');
+    if (langSw) langSw.style.setProperty('transition', 'opacity 0.22s ease, visibility 0.22s ease', 'important');
+    syncLang();
+  });
 })();
