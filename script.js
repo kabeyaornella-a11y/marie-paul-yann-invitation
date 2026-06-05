@@ -1425,7 +1425,7 @@ function sendRsvp(){
 })();
 
 
-/* ===== PATCH V50 — Réécriture définitive ===== */
+/* ===== PATCH V51 — Correctif intégral ===== */
 (function(){
 'use strict';
 
@@ -1436,41 +1436,39 @@ function whenReady(fn){
 }
 
 /* ══════════════════════════════════════════════════════
-   1. SHIMMER — rAF direct, immune aux conflits CSS
-   CAUSE RACINE : background:gradient!important (shorthand)
-   verrouille background-position:0% 0%!important, empêchant
-   toute animation CSS ou WAAPI de le modifier.
-   SOLUTION : rAF fixe background-position inline !important
-   (le longhand explicite écrase le shorthand implicite).
+   1. SHIMMER — rAF complet : toutes propriétés à chaque frame
+   Le rAF définit `background` (shorthand, position implicite=0%)
+   puis immédiatement `background-position` (longhand explicite, GAGNE).
+   Ainsi même après forceShimmer (background:shorthand inline !important),
+   la frame suivante restaure tout en <16ms.
 ══════════════════════════════════════════════════════ */
 (function(){
-  function applyShimmer(){
-    document.querySelectorAll('.h-names,.final-h-names').forEach(function(el){
-      var p=el.style;
-      /* background-image (longhand) et non background (shorthand) */
-      p.setProperty('background-image','linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)','important');
-      p.setProperty('background-size','300% 100%','important');
-      p.setProperty('background-repeat','no-repeat','important');
-      p.setProperty('background-color','transparent','important');
-      p.setProperty('-webkit-background-clip','text','important');
-      p.setProperty('background-clip','text','important');
-      p.setProperty('-webkit-text-fill-color','transparent','important');
-      p.setProperty('color','transparent','important');
-      p.setProperty('text-shadow','none','important');
-      p.setProperty('animation','none','important');
-      if(el._v50raf) return; /* boucle déjà en cours */
-      el._v50raf=true;
-      var t0=null; var DUR=3500;
-      (function frame(ts){
-        if(!t0) t0=ts;
-        var pct=(((ts-t0)%DUR)/DUR*100).toFixed(2);
-        el.style.setProperty('background-position',pct+'% 50%','important');
-        requestAnimationFrame(frame);
-      })(performance.now());
-    });
+  var GRAD='linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)';
+  function startRaf(el){
+    if(el._v51raf) return;
+    el._v51raf=true;
+    var t0=null, DUR=3500;
+    (function loop(ts){
+      if(!t0) t0=ts;
+      var pct=(((ts-t0)%DUR)/DUR*100).toFixed(2);
+      var s=el.style;
+      s.setProperty('background',GRAD,'important');
+      s.setProperty('background-size','300% 100%','important');
+      s.setProperty('-webkit-background-clip','text','important');
+      s.setProperty('background-clip','text','important');
+      s.setProperty('-webkit-text-fill-color','transparent','important');
+      s.setProperty('color','transparent','important');
+      s.setProperty('animation','none','important');
+      s.setProperty('text-shadow','none','important');
+      /* CRITIQUE : position APRÈS shorthand → longhand explicite gagne */
+      s.setProperty('background-position',pct+'% 50%','important');
+      requestAnimationFrame(loop);
+    })(performance.now());
   }
-  /* Timings : couvrir les interférences forceShimmer(0ms, 500ms, 1400ms) */
-  [80,510,610,1410,1810].forEach(function(t){ setTimeout(applyShimmer,t); });
+  function apply(){
+    document.querySelectorAll('.h-names,.final-h-names').forEach(startRaf);
+  }
+  [0,100,520,1420].forEach(function(t){ setTimeout(apply,t); });
 })();
 
 /* ══════════════════════════════════════════════════════
@@ -1495,71 +1493,39 @@ function whenReady(fn){
 
 /* ══════════════════════════════════════════════════════
    3. HÉBERGEMENTS CARROUSEL
-   Clone wrap+nav pour supprimer TOUS les listeners
-   des versions précédentes (V34, V46, V47, V48, V49).
+   Clone wrap+nav → supprime TOUS les listeners existants.
+   Rendu via classes CSS (is-active/is-prev/is-next/is-hidden)
+   avec règles CSS haute-spécificité dans style.css V51.
 ══════════════════════════════════════════════════════ */
 (function(){
-  var _inited=false;
+  var N=3, cur=0, _ready=false;
+  function render(){
+    var w=document.getElementById('stay-wrap');
+    var n=document.getElementById('stay-nav');
+    if(!w||!n) return;
+    w.querySelectorAll('.c3-item').forEach(function(el,i){
+      el.classList.toggle('is-active',i===cur);
+      el.classList.toggle('is-prev',i===(cur-1+N)%N);
+      el.classList.toggle('is-next',i===(cur+1)%N);
+      el.classList.toggle('is-hidden',i!==cur&&i!==(cur-1+N)%N&&i!==(cur+1)%N);
+    });
+    n.querySelectorAll('.c3-dot').forEach(function(d,i){
+      d.classList.toggle('is-active',i===cur);
+    });
+  }
   function init(){
     var wrap=document.getElementById('stay-wrap');
     var nav=document.getElementById('stay-nav')||document.querySelector('#hebergements .c3-nav');
-    if(!wrap||!nav) return;
-    /* Cloner = supprimer tous les event listeners existants */
+    if(!wrap||!nav||wrap._v51done) return;
     var w=wrap.cloneNode(true), n=nav.cloneNode(true);
     wrap.parentNode.replaceChild(w,wrap);
     nav.parentNode.replaceChild(n,nav);
-    /* Overflow visible sur toute la chaîne d'ancêtres */
-    var heb=document.getElementById('hebergements');
-    if(heb){
-      heb.style.setProperty('overflow','visible','important');
-      var inner=heb.querySelector('.es-inner');
-      if(inner) inner.style.setProperty('overflow','visible','important');
-    }
-    w.style.setProperty('overflow','visible','important');
-    var items=[].slice.call(w.querySelectorAll('.c3-item'));
-    var dots=[].slice.call(n.querySelectorAll('.c3-dot'));
-    var N=items.length; if(!N) return;
-    var cur=0;
-    function render(){
-      var prev=(cur-1+N)%N, nxt=(cur+1)%N;
-      items.forEach(function(el,i){
-        var p=el.style;
-        el.classList.remove('is-active','is-prev','is-next','is-hidden');
-        p.setProperty('position','absolute','important');
-        p.setProperty('top','50%','important');
-        p.setProperty('left','50%','important');
-        p.setProperty('width','clamp(220px,56vw,360px)','important');
-        p.setProperty('transition','all .55s cubic-bezier(.25,.46,.45,.94)','important');
-        if(i===cur){
-          el.classList.add('is-active');
-          p.setProperty('transform','translate(-50%,-50%) scale(1) translateZ(0)','important');
-          p.setProperty('opacity','1','important');
-          p.setProperty('z-index','10','important');
-          p.setProperty('filter','none','important');
-        } else if(i===prev){
-          el.classList.add('is-prev');
-          p.setProperty('transform','translate(-108%,-50%) scale(.72) translateZ(-80px) rotateY(14deg)','important');
-          p.setProperty('opacity','.48','important');
-          p.setProperty('z-index','5','important');
-          p.setProperty('filter','brightness(.8)','important');
-        } else if(i===nxt){
-          el.classList.add('is-next');
-          p.setProperty('transform','translate(8%,-50%) scale(.72) translateZ(-80px) rotateY(-14deg)','important');
-          p.setProperty('opacity','.48','important');
-          p.setProperty('z-index','5','important');
-          p.setProperty('filter','brightness(.8)','important');
-        } else {
-          el.classList.add('is-hidden');
-          p.setProperty('transform','translate(-50%,-50%) scale(.4) translateZ(-260px)','important');
-          p.setProperty('opacity','0','important');
-          p.setProperty('z-index','1','important');
-        }
-      });
-      dots.forEach(function(d,i){
-        d.style.setProperty('background',i===cur?'#B99048':'rgba(183,143,67,.22)','important');
-        d.style.setProperty('transform',i===cur?'scale(1.3)':'scale(1)','important');
-      });
-    }
+    w._v51done=true;
+    /* Overflow visible sur toute la chaîne */
+    [document.getElementById('hebergements'),
+     document.querySelector('#hebergements .es-inner'),w
+    ].forEach(function(el){ if(el) el.style.setProperty('overflow','visible','important'); });
+    /* Listeners sur éléments clonés */
     n.querySelectorAll('.c3-arrow').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -1567,10 +1533,10 @@ function whenReady(fn){
         render();
       });
     });
-    dots.forEach(function(d,i){
+    n.querySelectorAll('.c3-dot').forEach(function(d,i){
       d.addEventListener('click',function(e){ e.stopPropagation(); cur=i; render(); });
     });
-    items.forEach(function(el,i){
+    w.querySelectorAll('.c3-item').forEach(function(el,i){
       el.addEventListener('click',function(){ if(i!==cur){cur=i;render();} });
     });
     var sx=0;
@@ -1580,11 +1546,11 @@ function whenReady(fn){
       if(Math.abs(dx)>40){cur=dx<0?(cur+1)%N:(cur-1+N)%N;render();}
     },{passive:true});
     render();
-    _inited=true;
+    _ready=true;
   }
   whenReady(function(){
     init();
-    if(!_inited) setTimeout(init,800);
+    if(!_ready) setTimeout(init,600);
   });
 })();
 

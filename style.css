@@ -8859,26 +8859,22 @@ section#autour::before,section#autour::after,
   margin-top:20px!important;width:auto!important;overflow:visible!important;
 }
 
-/* 6. PRÉNOMS SHIMMER
-   background-image (longhand, pas shorthand) = background-position
-   n'est pas verrouillé en !important, permettant au rAF JS de l'animer.
-   Explication : background:X!important (shorthand) = background-position:0!important
-   implicite, bloquant toute animation. Le longhand background-image évite ça. */
+/* 6. PRÉNOMS SHIMMER — V51
+   Le rAF JS pose background (shorthand → position=0%) puis immédiatement
+   background-position (longhand → gagne car déclaré APRÈS le shorthand).
+   Le CSS ici sert de fallback initial visible avant que le rAF démarre. */
 .h-names,.final-h-names,
 #hero .h-names,#photo-finale .final-h-names{
   font-family:'ChopinScript','Great Vibes',cursive!important;
-  background-image:linear-gradient(
+  background:linear-gradient(
     to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,
     #F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%
   )!important;
   background-size:300% 100%!important;
-  background-repeat:no-repeat!important;
-  background-color:transparent!important;
   -webkit-background-clip:text!important;background-clip:text!important;
   -webkit-text-fill-color:transparent!important;color:transparent!important;
   text-shadow:none!important;
   animation:none!important;
-  will-change:background-position!important;
 }
 /* Supprimer tous les pseudo-éléments parasites sur les prénoms */
 .h-names::before,.h-names::after,
@@ -8897,14 +8893,49 @@ section#dresscode{overflow:visible!important;padding-top:clamp(40px,6vh,70px)!im
   position:fixed!important;inset:0!important;
   pointer-events:none!important;z-index:9999!important;overflow:visible!important;
 }
-/* Confetti pieces — keyframe correct (rsvpConfettiReal) */
-.rsvp-confetti-piece{
-  opacity:0;
-  animation:rsvpConfettiReal var(--dur,950ms) cubic-bezier(.12,.7,.25,1) forwards!important;
-}
 
 /* 9. KICKERS visibles */
 .es-kicker,.section-kicker{
   display:block!important;visibility:visible!important;opacity:1!important;
   overflow:visible!important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   V51 — Carousel hébergements : règles CSS haute-spécificité
+   Garantit que is-active/is-prev/is-next/is-hidden fonctionnent
+   même face aux overrides !important précédents.
+═══════════════════════════════════════════════════════ */
+#hebergements #stay-wrap,
+#hebergements .c3-wrap{
+  position:relative!important;
+  height:clamp(300px,52vw,460px)!important;
+  perspective:1100px!important;
+  overflow:visible!important;
+}
+#hebergements .c3-item{
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  width:clamp(200px,54vw,380px)!important;
+  transition:transform .55s cubic-bezier(.25,.46,.45,.94),
+             opacity .55s ease,
+             filter .55s ease!important;
+  transform-origin:center center!important;
+  cursor:pointer!important;
+}
+#hebergements .c3-item.is-active{
+  transform:translate(-50%,-50%) scale(1) translateZ(0)!important;
+  z-index:10!important;opacity:1!important;filter:none!important;
+}
+#hebergements .c3-item.is-prev{
+  transform:translate(-112%,-50%) scale(.72) translateZ(-90px) rotateY(15deg)!important;
+  z-index:5!important;opacity:.55!important;filter:brightness(.78)!important;
+}
+#hebergements .c3-item.is-next{
+  transform:translate(12%,-50%) scale(.72) translateZ(-90px) rotateY(-15deg)!important;
+  z-index:5!important;opacity:.55!important;filter:brightness(.78)!important;
+}
+#hebergements .c3-item.is-hidden{
+  transform:translate(-50%,-50%) scale(.4) translateZ(-260px)!important;
+  z-index:1!important;opacity:0!important;pointer-events:none!important;
 }
