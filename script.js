@@ -1198,16 +1198,16 @@ function sendRsvp(){
   }
 
   function forceVerse(){
-    var c=q(‘.story2-citation’), t=q(‘.story2-cit-text’), ref=q(‘.story2-cit-ref’);
+    var c=q('.story2-citation'), t=q('.story2-cit-text'), ref=q('.story2-cit-ref');
     if(t){
-      t.innerHTML=’<span>« Ainsi ils ne sont plus deux, mais une seule chair.</span><span>Que l’homme donc ne sépare pas ce que Dieu a uni. »</span>’;
-      t.style.setProperty(‘display’,’block’,’important’);t.style.setProperty(‘visibility’,’visible’,’important’);t.style.setProperty(‘opacity’,’1’,’important’);t.style.setProperty(‘clip-path’,’none’,’important’);t.style.setProperty(‘transform’,’none’,’important’);
-      qa(‘span’,t).forEach(function(s){
-        s.style.setProperty(‘opacity’,’1’,’important’);s.style.setProperty(‘clip-path’,’inset(0 0 0 0)’,’important’);s.style.setProperty(‘transform’,’none’,’important’);s.style.setProperty(‘animation’,’none’,’important’);
+      t.innerHTML="<span>« Ainsi ils ne sont plus deux, mais une seule chair. »</span><span>Que l’homme donc ne sépare pas ce que Dieu a uni. »</span>";
+      t.style.setProperty('display','block','important');t.style.setProperty('visibility','visible','important');t.style.setProperty('opacity','1','important');t.style.setProperty('clip-path','none','important');t.style.setProperty('transform','none','important');
+      qa('span',t).forEach(function(s){
+        s.style.setProperty('opacity','1','important');s.style.setProperty('clip-path','inset(0 0 0 0)','important');s.style.setProperty('transform','none','important');s.style.setProperty('animation','none','important');
       });
     }
-    if(ref) ref.textContent=’Matthieu 19:6’;
-    if(c){ c.style.setProperty(‘display’,’block’,’important’);c.style.setProperty(‘visibility’,’visible’,’important’);c.style.setProperty(‘opacity’,’1’,’important’);c.style.setProperty(‘transform’,’none’,’important’);c.classList.add(‘s2-in’,’in-view’,’is-swept’); }
+    if(ref) ref.textContent='Matthieu 19:6';
+    if(c){ c.style.setProperty('display','block','important');c.style.setProperty('visibility','visible','important');c.style.setProperty('opacity','1','important');c.style.setProperty('transform','none','important');c.classList.add('s2-in','in-view','is-swept'); }
   }
 
   function forceShimmer(){
