@@ -8795,3 +8795,116 @@ section#hebergements::before,section#hebergements::after{
 
 /* 9. DRESS CODE */
 section#dresscode{overflow:visible!important;padding-top:clamp(40px,6vh,70px)!important;}
+
+/* ═══════════════════════════════════════════════════════
+   V50 — Correctifs définitifs
+   Priorité maximale : ces règles écrasent tout ce qui précède.
+═══════════════════════════════════════════════════════ */
+
+/* 1. OVERLAYS BEIGES — suppression totale de tous les pseudo-éléments parasites */
+section#dresscode::before,section#dresscode::after,
+#dresscode::before,#dresscode::after,
+section#hebergements::before,section#hebergements::after,
+#hebergements::before,#hebergements::after,
+section#autour::before,section#autour::after,
+#autour::before,#autour::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  pointer-events:none!important;
+}
+
+/* 2. HÉBERGEMENTS — overflow visible pour le carrousel 3D */
+#hebergements,section#hebergements,
+#hebergements>.es-inner,
+#hebergements .c3-wrap,
+#hebergements #stay-wrap{
+  overflow:visible!important;
+}
+
+/* 3. TEXTE INTRO HÉRO — "Vous êtes conviés..." lisible */
+#hero #txt-intro,#hero .h-intro,.h-intro{
+  font-size:clamp(11px,2.8vw,20px)!important;
+  letter-spacing:.14em!important;
+  width:82vw!important;max-width:82vw!important;
+  white-space:normal!important;line-height:1.65!important;
+}
+@media(max-width:430px){
+  #hero #txt-intro,#hero .h-intro,.h-intro{
+    font-size:clamp(11px,3.3vw,15px)!important;
+    width:88vw!important;max-width:88vw!important;
+  }
+}
+
+/* 4. RSVP → REMERCIEMENTS — supprimer l'espace vide */
+.rsvp-chapter,#rsvp.rsvp-chapter{
+  padding-bottom:0!important;margin-bottom:0!important;
+}
+#remerciements,section#remerciements{
+  margin-top:-480px!important;position:relative!important;
+  z-index:10!important;background:#F7EFE3!important;
+  padding-top:clamp(50px,8vh,90px)!important;
+}
+
+/* 5. BOUTON CALENDRIER */
+#calendarBtnParent{
+  display:none!important;opacity:0!important;
+  visibility:hidden!important;pointer-events:none!important;
+}
+#calendarBtnParent.v50-on,
+#calendarBtnParent.v49-on,
+#calendarBtnParent.eventia-revealed{
+  display:inline-flex!important;opacity:1!important;
+  visibility:visible!important;pointer-events:auto!important;
+  margin-top:20px!important;width:auto!important;overflow:visible!important;
+}
+
+/* 6. PRÉNOMS SHIMMER
+   background-image (longhand, pas shorthand) = background-position
+   n'est pas verrouillé en !important, permettant au rAF JS de l'animer.
+   Explication : background:X!important (shorthand) = background-position:0!important
+   implicite, bloquant toute animation. Le longhand background-image évite ça. */
+.h-names,.final-h-names,
+#hero .h-names,#photo-finale .final-h-names{
+  font-family:'ChopinScript','Great Vibes',cursive!important;
+  background-image:linear-gradient(
+    to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,
+    #F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%
+  )!important;
+  background-size:300% 100%!important;
+  background-repeat:no-repeat!important;
+  background-color:transparent!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  text-shadow:none!important;
+  animation:none!important;
+  will-change:background-position!important;
+}
+/* Supprimer tous les pseudo-éléments parasites sur les prénoms */
+.h-names::before,.h-names::after,
+.final-h-names::before,.final-h-names::after,
+#hero .h-names::before,#hero .h-names::after,
+#photo-finale .final-h-names::before,#photo-finale .final-h-names::after{
+  display:none!important;content:none!important;
+  animation:none!important;background:none!important;
+}
+
+/* 7. DRESS CODE section */
+section#dresscode{overflow:visible!important;padding-top:clamp(40px,6vh,70px)!important;}
+
+/* 8. RSVP confetti container */
+.rsvp-confetti{
+  position:fixed!important;inset:0!important;
+  pointer-events:none!important;z-index:9999!important;overflow:visible!important;
+}
+/* Confetti pieces — keyframe correct (rsvpConfettiReal) */
+.rsvp-confetti-piece{
+  opacity:0;
+  animation:rsvpConfettiReal var(--dur,950ms) cubic-bezier(.12,.7,.25,1) forwards!important;
+}
+
+/* 9. KICKERS visibles */
+.es-kicker,.section-kicker{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  overflow:visible!important;
+}
