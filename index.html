@@ -221,8 +221,27 @@
 
 </section>
 <section class="dress-chapter es-section" id="dresscode">
-<div class="es-inner">
-<iframe class="dress-frame dress-frame-v5" scrolling="no" src="dresscode-v5.html" title="Dress code"></iframe>
+<div class="es-inner dress-inline-wrap">
+  <div class="es-kicker">Dress Code</div>
+  <h2 class="es-title">L'élégance attendue</h2>
+  <div class="date-title-line-main"></div><div class="date-title-line-secondary"></div>
+  <p class="es-copy" style="font-style:italic;max-width:480px;margin:0 auto 18px;">Nous vous invitons à privilégier des tenues élégantes dans des nuances ivoire, champagne, marron et noir.</p>
+  <div class="dress-palette">
+    <div class="dress-sw"><i style="background:#fff8df"></i>Ivoire</div>
+    <div class="dress-sw"><i style="background:#d8b46f"></i>Champagne</div>
+    <div class="dress-sw"><i style="background:#6a421d"></i>Marron</div>
+    <div class="dress-sw"><i style="background:#090807"></i>Noir</div>
+  </div>
+  <div class="dress-stage" id="dressWrapInline">
+    <div class="dress-spotlights">
+      <div class="dress-spot-1"></div>
+      <div class="dress-spot-2"></div>
+      <div class="dress-spot-floor"></div>
+    </div>
+    <img class="dress-podium-img" src="dresscode-podium.png" alt="" loading="lazy"/>
+    <img class="dress-sil-img" src="dresscode-silhouettes.png" alt="Tenues de mariage" loading="lazy"/>
+    <canvas id="dressCanvas"></canvas>
+  </div>
 </div>
 </section>
 <section class="es-section" id="hebergements">
@@ -472,30 +491,52 @@ body.eventia-lang-hidden #topnav #lang-sw,body.eventia-hide-lang #topnav #lang-s
 /* Shimmer prénoms : conserve Chopin Script, taille et position d'origine */
 #hero .h-names,#photo-finale .final-h-names,.h-names,.final-h-names{font-family:'ChopinScript','Great Vibes',cursive!important;background:linear-gradient(105deg,#7A4B20 0%,#B99048 18%,#F3D391 34%,#FFF3C1 48%,#C99A45 63%,#8A5B1E 82%,#F3D391 100%)!important;background-size:300% auto!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important;animation:eventiaV44Shimmer 4.4s ease-in-out infinite!important;}
 @keyframes eventiaV44Shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-/* Particules héro : petites étoiles montantes, plus lentes */
-.hero-snow{mix-blend-mode:screen!important;opacity:.62!important;}
-.hero-snow i{top:auto!important;bottom:-8%!important;width:6px!important;height:6px!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;filter:none!important;opacity:0!important;animation:heroStarsUpV44 linear infinite!important;animation-duration:calc(76s + var(--extraDur, 0s))!important;}
-.hero-snow i::before{content:'✦';position:absolute;inset:0;display:block;font-size:clamp(4px,.9vw,7px);line-height:1;color:rgba(255,248,214,.76);text-shadow:0 0 6px rgba(243,213,138,.55),0 0 12px rgba(255,255,255,.24);}
-.hero-snow i:nth-child(3n)::before{font-size:clamp(3px,.72vw,5px);opacity:.78;}
-.hero-snow i:nth-child(4n)::before{font-size:clamp(5px,1vw,8px);opacity:.52;}
-@keyframes heroStarsUpV44{0%{transform:translate3d(0,8vh,0) scale(.72);opacity:0;}12%{opacity:.52;}70%{opacity:.38;}100%{transform:translate3d(var(--drift,18px),-112vh,0) scale(1.08);opacity:0;}}
+/* Particules héro : étoiles montantes scintillantes, densité × 2 */
+.hero-snow{mix-blend-mode:screen!important;opacity:.78!important;}
+.hero-snow i{top:auto!important;bottom:-8%!important;width:6px!important;height:6px!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;filter:none!important;animation:heroStarsUpV44 linear infinite!important;}
+.hero-snow i::before{content:'✦';position:absolute;inset:0;display:block;font-size:clamp(4px,1vw,8px);line-height:1;color:rgba(255,248,214,.88);text-shadow:0 0 7px rgba(243,213,138,.7),0 0 14px rgba(255,255,255,.35),0 0 22px rgba(255,235,150,.25);}
+.hero-snow i:nth-child(3n)::before{content:'✧';font-size:clamp(3px,.8vw,6px);}
+.hero-snow i:nth-child(4n)::before{content:'⋆';font-size:clamp(5px,1.1vw,9px);}
+.hero-snow i:nth-child(5n)::before{content:'✦';font-size:clamp(6px,1.3vw,10px);color:rgba(255,240,180,.95);}
+@keyframes heroStarsUpV44{0%{transform:translate3d(0,8vh,0) scale(.6);opacity:0;}10%{opacity:.7;}65%{opacity:.45;}100%{transform:translate3d(var(--drift,18px),-115vh,0) scale(1.15);opacity:0;}}
 #sparkCanvas{opacity:.55!important;mix-blend-mode:screen!important;}
 /* Timeline : le lendemain supprimé, hauteur ajustée au contenu restant */
 #timelineExactFrame,.timeline-exact-frame{display:block!important;width:100%!important;height:clamp(760px,118vw,930px)!important;min-height:760px!important;max-height:930px!important;overflow:hidden!important;border:0!important;margin:0 auto!important;}
 @media(max-width:430px){#timelineExactFrame,.timeline-exact-frame{height:760px!important;min-height:760px!important;max-height:760px!important;}}
-/* Dress code : agrandir sans couper silhouettes ni podium */
-.dress-frame,.dress-frame-v5,iframe[src*="dresscode"]{height:clamp(830px,146vw,1080px)!important;min-height:830px!important;max-height:none!important;display:block!important;overflow:visible!important;margin:0 auto!important;border:0!important;}
+/* Dress code inline */
+.dress-inline-wrap{text-align:center!important;padding:clamp(28px,5vh,44px) 12px clamp(16px,3vh,30px)!important;}
+.dress-palette{display:flex!important;justify-content:center!important;gap:18px!important;flex-wrap:wrap!important;margin:0 auto 22px!important;}
+.dress-sw{text-align:center!important;font-size:11px!important;letter-spacing:.06em!important;color:#674638!important;}
+.dress-sw i{display:block!important;width:32px!important;height:32px!important;border-radius:50%!important;border:1px solid rgba(178,140,67,.35)!important;margin:0 auto 5px!important;}
+.dress-stage{position:relative!important;width:100%!important;max-width:980px!important;margin:0 auto!important;overflow:visible!important;min-height:clamp(240px,68vw,560px)!important;}
+.dress-podium-img{width:112%!important;margin-left:-6%!important;display:block!important;object-fit:contain!important;position:relative!important;z-index:1!important;filter:brightness(1.05) saturate(.82)!important;}
+.dress-sil-img{position:absolute!important;left:-9%!important;bottom:7%!important;width:118%!important;z-index:2!important;filter:saturate(.88) brightness(1.04) drop-shadow(0 18px 28px rgba(93,59,23,.15))!important;}
+#dressCanvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;pointer-events:none!important;z-index:4!important;}
+.dress-spotlights{position:absolute!important;inset:0!important;pointer-events:none!important;z-index:3!important;mix-blend-mode:overlay!important;}
+.dress-spot-1,.dress-spot-2{position:absolute!important;border-radius:50%!important;filter:blur(22px)!important;background:radial-gradient(ellipse at 50% 20%,rgba(255,252,230,.9) 0%,rgba(255,244,200,.5) 30%,rgba(255,235,170,.2) 55%,transparent 72%)!important;}
+.dress-spot-1{width:38%!important;height:95%!important;animation:dressSpot1 9s ease-in-out infinite alternate!important;}
+.dress-spot-2{width:34%!important;height:88%!important;animation:dressSpot2 11s ease-in-out infinite alternate!important;animation-delay:-4s!important;}
+.dress-spot-floor{position:absolute!important;bottom:7%!important;left:50%!important;transform:translateX(-50%)!important;width:72%!important;height:65px!important;background:radial-gradient(ellipse at center,rgba(255,240,185,.55) 0%,transparent 70%)!important;filter:blur(20px)!important;animation:dressFloor 5.5s ease-in-out infinite alternate!important;}
+@keyframes dressSpot1{0%{left:1%;top:-10%;transform:rotate(-14deg) scaleX(.6);opacity:.75}40%{left:16%;top:-5%;transform:rotate(-5deg) scaleX(.74);opacity:1}100%{left:38%;top:-8%;transform:rotate(7deg) scaleX(.68);opacity:.78}}
+@keyframes dressSpot2{0%{right:1%;top:-8%;transform:rotate(12deg) scaleX(.58);opacity:.68}45%{right:18%;top:-3%;transform:rotate(3deg) scaleX(.72);opacity:.95}100%{right:40%;top:-10%;transform:rotate(-9deg) scaleX(.65);opacity:.7}}
+@keyframes dressFloor{from{opacity:.5;width:56%}to{opacity:1;width:74%}}
 /* Empreintes : réduire le vide autour de l'enveloppe */
 #empreintes .es-inner{padding-bottom:0!important;margin-bottom:0!important;}
 .envelope-v13-host{margin-top:0!important;padding-top:0!important;}
 .envelope-v13-frame,iframe[src*="envelope-v13"]{height:clamp(410px,92vw,560px)!important;margin-top:-10px!important;margin-bottom:0!important;filter:contrast(1.08) saturate(1.08) brightness(.96) drop-shadow(0 16px 30px rgba(104,70,34,.12))!important;}
-/* Parole sacrée : verset lisible */
-.story2-citation,.story2-citation.s2-in,.story2-citation.in-view,.story2-citation.is-swept{display:block!important;visibility:visible!important;opacity:1!important;min-height:clamp(210px,34vh,320px)!important;padding:clamp(38px,6vh,58px) 18px!important;clip-path:none!important;transform:none!important;position:relative!important;z-index:5!important;background:transparent!important;overflow:visible!important;}
-.story2-cit-text{display:block!important;visibility:visible!important;opacity:1!important;max-width:760px!important;margin:22px auto!important;font-family:'Cormorant Garamond',serif!important;font-style:italic!important;font-size:clamp(22px,5.5vw,34px)!important;line-height:1.64!important;color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;background:none!important;clip-path:none!important;position:relative!important;z-index:6!important;text-shadow:0 0 18px rgba(184,138,58,.13)!important;}
-.story2-cit-text span{display:block!important;visibility:visible!important;opacity:1!important;color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;background:none!important;animation:eventiaVerseSweepV44 1.15s ease both!important;}
-.story2-cit-text span:nth-child(2){animation-delay:.18s!important;}
+/* Parole sacrée : verset toujours visible (JS setProperty écrase les animations hide) */
+.story2-citation,.story2-citation.s2-in,.story2-citation.in-view,.story2-citation.is-swept{display:block!important;visibility:visible!important;opacity:1!important;min-height:clamp(180px,28vh,280px)!important;padding:clamp(32px,5vh,50px) 18px!important;clip-path:none!important;transform:none!important;position:relative!important;z-index:5!important;background:transparent!important;overflow:visible!important;}
+.story2-cit-text{display:block!important;visibility:visible!important;opacity:1!important;max-width:720px!important;margin:18px auto!important;font-family:'Cormorant Garamond',serif!important;font-style:italic!important;font-size:clamp(20px,5vw,30px)!important;line-height:1.64!important;color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;background:none!important;clip-path:none!important;position:relative!important;z-index:6!important;text-shadow:0 0 18px rgba(184,138,58,.13)!important;}
+.story2-cit-text span{display:block!important;visibility:visible!important;opacity:1!important;color:#8B5F2D!important;-webkit-text-fill-color:#8B5F2D!important;background:none!important;clip-path:inset(0 0 0 0)!important;transform:none!important;animation:none!important;}
 .story2-cit-label,.story2-cit-ref,.story2-cit-line{display:block!important;visibility:visible!important;opacity:1!important;}
-@keyframes eventiaVerseSweepV44{from{clip-path:inset(0 100% 0 0);filter:blur(2px);opacity:.35}to{clip-path:inset(0 0 0 0);filter:blur(0);opacity:1}}
+/* Dégradés de transition entre sections */
+#hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(80px,14vh,140px);background:linear-gradient(to bottom,transparent 0%,rgba(247,239,227,.7) 70%,rgba(247,239,227,1) 100%);z-index:3;pointer-events:none;}
+.story2-chapter{position:relative;}
+.story2-chapter::before{content:'';position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,rgba(247,239,227,.8),transparent);z-index:1;pointer-events:none;}
+#programme::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,rgba(247,239,227,.6));pointer-events:none;}
+#dresscode{position:relative!important;}
+#dresscode::before{content:'';position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,rgba(247,239,227,.9),transparent);z-index:5;pointer-events:none;}
+#dresscode::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,transparent,rgba(247,239,227,.9));z-index:5;pointer-events:none;}
 /* RSVP dans l'ouverture des rideaux */
 #rsvp.rsvp-chapter{position:relative!important;background-image:url('fond-rideaux-rsvp-transparent.png')!important;background-repeat:no-repeat!important;background-position:center top!important;background-size:100% auto!important;min-height:clamp(980px,158vw,1200px)!important;padding:0 0 62px!important;overflow:visible!important;}
 #rsvp .es-inner{position:relative!important;width:clamp(236px,62vw,388px)!important;max-width:388px!important;margin:0 auto!important;padding:clamp(180px,29vw,240px) 0 0!important;text-align:center!important;background:transparent!important;z-index:3!important;}
@@ -521,9 +562,8 @@ body.eventia-lang-hidden #topnav #lang-sw,body.eventia-hide-lang #topnav #lang-s
 .es-copy,.story2-para,.c3-desc,.act-copy,.gift-accord-body p,.thanks-copy-main,.thanks-copy-sub{font-family:'Cormorant Garamond',serif!important;color:#5C3D26!important;-webkit-text-fill-color:#5C3D26!important;}
 .es-title,.countdown-title,.story2-main-title,.places-card-title,.c3-name,.act-name{color:#452819!important;-webkit-text-fill-color:#452819!important;}
 .thanks-copy-main,.thanks-copy-sub{color:#5C3D26!important;-webkit-text-fill-color:#5C3D26!important;opacity:1!important;}
-/* Bouton calendrier : caché par défaut, révélé après grattage des médaillons */
-#calendarBtnParent{display:none!important;opacity:0;transition:opacity .5s ease;}
-#calendarBtnParent.eventia-revealed{display:inline-flex!important;opacity:1;}
+/* Bouton calendrier : toujours visible */
+#calendarBtnParent{display:inline-flex!important;opacity:1!important;}
 /* Responsive conteneur : variables disponibles pour placements JS/CSS */
 .es-section,#hero,#rsvp,.story2-block,.date-chapter,.countdown-chapter,.program-chapter,.final-chapter{container-type:inline-size;--cw:100%;--ch:100%;}
 /* Bouton langue — autorité absolue (2,2,1) — dépasse tous les masquages (max 2,1,1) */
