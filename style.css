@@ -8712,3 +8712,86 @@ section#hebergements::before,section#hebergements::after{
   background:#F7EFE3!important;
   padding-top:clamp(44px,8vh,80px)!important;
 }
+
+
+/* ===== PATCH V49 — Correctifs définitifs (remplace V48) ===== */
+
+/* 1. SHIMMER — keyframe correct: 0%→100% avec background-size:300% */
+@keyframes shimmerV49{
+  0%  {background-position:0% 50%}
+  100%{background-position:100% 50%}
+}
+#hero .h-names,.h-names,
+#photo-finale .final-h-names,.final-h-names{
+  font-family:'ChopinScript','Great Vibes',cursive!important;
+  background:linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)!important;
+  background-size:300% 100%!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  animation:shimmerV49 3.5s linear infinite!important;
+  will-change:background-position!important;
+  text-shadow:none!important;position:relative!important;
+}
+#hero .h-names::before,#hero .h-names::after,.h-names::before,.h-names::after,
+#photo-finale .final-h-names::before,#photo-finale .final-h-names::after,
+.final-h-names::before,.final-h-names::after{
+  display:none!important;content:none!important;animation:none!important;
+}
+
+/* 2. RSVP CONFETTI — supprime opacity:0!important qui bloquait l'animation */
+.rsvp-confetti-piece{
+  opacity:0;
+  animation:rsvpV47 var(--dur,700ms) ease-out var(--delay,0ms) forwards!important;
+}
+
+/* 3. BOUTON CALENDRIER */
+#calendarBtnParent{display:none!important;opacity:0!important;visibility:hidden!important;}
+#calendarBtnParent.v49-on{
+  display:inline-flex!important;opacity:1!important;visibility:visible!important;
+  pointer-events:auto!important;margin-top:20px!important;
+}
+
+/* 4. OVERLAYS BEIGES — suppression définitive */
+#dresscode::before,#dresscode::after,
+section#dresscode::before,section#dresscode::after,
+#hebergements::before,#hebergements::after,
+section#hebergements::before,section#hebergements::after{
+  display:none!important;content:none!important;background:none!important;
+}
+
+/* 5. HÉBERGEMENTS overflow */
+#hebergements,section#hebergements,
+#hebergements>.es-inner,#hebergements .c3-wrap,#stay-wrap{
+  overflow:visible!important;
+}
+
+/* 6. TEXTE INTRO HERO */
+#hero #txt-intro,#hero .h-intro{
+  font-size:clamp(11px,2.6vw,19px)!important;letter-spacing:.13em!important;
+  width:76vw!important;max-width:76vw!important;white-space:normal!important;
+}
+@media(max-width:430px){
+  #hero #txt-intro,#hero .h-intro{
+    font-size:clamp(10px,3vw,14px)!important;width:82vw!important;max-width:82vw!important;
+  }
+}
+
+/* 7. RSVP → REMERCIEMENTS */
+#rsvp.rsvp-chapter{padding-bottom:0!important;margin-bottom:0!important;}
+#remerciements,section#remerciements{
+  margin-top:-320px!important;position:relative!important;z-index:10!important;
+  background:#F7EFE3!important;padding-top:clamp(44px,8vh,80px)!important;
+}
+
+/* 8. KICKERS */
+.es-kicker,.section-kicker{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  overflow:visible!important;color:#A77A35!important;-webkit-text-fill-color:#A77A35!important;
+  background:none!important;font-family:'Cinzel','Tenor Sans',serif!important;
+  font-size:clamp(9.5px,1.9vw,11.5px)!important;letter-spacing:.44em!important;
+  text-transform:uppercase!important;margin-bottom:12px!important;
+  font-weight:500!important;white-space:nowrap!important;
+}
+
+/* 9. DRESS CODE */
+section#dresscode{overflow:visible!important;padding-top:clamp(40px,6vh,70px)!important;}
