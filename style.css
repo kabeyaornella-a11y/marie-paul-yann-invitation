@@ -527,7 +527,7 @@ body { overscroll-behavior: none; padding-bottom: var(--safe-bottom); }
   pointer-events: none; user-select: none;
   z-index: 0;
 }
-.story2-block-num { display: none !important; }
+.story2-block-num { display: block !important; }
 .story2-photo-num { display: none !important; }
 
 

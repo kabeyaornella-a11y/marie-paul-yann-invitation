@@ -27,8 +27,8 @@ html,body{background:#F7EFE3;font-family:'Questrial',sans-serif;color:#452819;ov
 .es-copy{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,4vw,24px);line-height:1.7;color:#674638;max-width:720px;margin:0 auto 24px;}
 .es-section{padding:clamp(28px,4vh,52px) 18px;text-align:center;background:#F7EFE3;}
 .es-inner{max-width:960px;margin:0 auto;}
-.line-main{width:130px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#B99048,#F3D58A,#A77A35,transparent);box-shadow:0 0 10px rgba(215,181,109,.35);}
-.line-sec{width:80px;height:1px;margin:0 auto 24px;background:linear-gradient(90deg,transparent,#F3D58A,#8E642B,transparent);opacity:.7;}
+.date-title-line-main,.line-main{width:130px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#B99048,#F3D58A,#A77A35,transparent);box-shadow:0 0 10px rgba(215,181,109,.35);display:block;}
+.date-title-line-secondary,.line-sec{width:80px;height:1px;margin:0 auto 20px;background:linear-gradient(90deg,transparent,#F3D58A,#8E642B,transparent);opacity:.7;display:block;}
 .gold-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:14px 28px;border:none;border-radius:999px;background:linear-gradient(135deg,#F3D391 0%,#D8AE67 50%,#B68A36 100%);font-family:'Tenor Sans',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#2A221F;text-decoration:none;box-shadow:0 14px 32px rgba(180,138,50,.28);transition:transform .2s,box-shadow .2s;cursor:pointer;margin-top:12px;}
 .gold-btn:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(180,138,50,.36);}
 
@@ -504,8 +504,8 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
 
 /* Enveloppe V13 compacte */
 #empreintes{padding:56px 14px 24px!important;overflow:hidden!important;background:#F7EFE3!important;}
-#empreintes .es-inner{max-width:560px!important;margin:0 auto!important}
-.master-envelope-wrap,.envelope-v13-host{height:auto!important;min-height:0!important;margin:10px auto 0!important;overflow:hidden!important;background:transparent!important}
+#empreintes .es-inner{max-width:560px!important;margin:0 auto!important;padding-bottom:16px!important;}
+.master-envelope-wrap,.envelope-v13-host{height:auto!important;min-height:0!important;margin:10px auto 0!important;overflow:hidden!important;background:transparent!important;margin-bottom:0!important;}
 .envelope-v13-host{filter:drop-shadow(0 16px 32px rgba(69,40,25,.15))!important;}
 #empreintes .es-copy{margin-bottom:4px!important;}
 
@@ -520,7 +520,7 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
 
 /* Remerciements : cadre centré */
 #photo-finale,#remerciements .final-photo-wrap,#remerciements img{display:block!important;margin:0 auto!important;text-align:center!important;}
-.final-photo-wrap{display:flex!important;justify-content:center!important;align-items:center!important;}
+.final-photo-wrap{display:flex!important;justify-content:center!important;align-items:center!important;margin-bottom:8px!important;margin-top:-20px!important;}
 
 /* Notre Histoire : chiffres romains derrière le texte, espace réduit */
 .story2-ghost-num{z-index:0!important;}
@@ -529,6 +529,29 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
 
 /* Supprimer anciens habillages iframe pour sections remplacées */
 .eventia-iframe-section iframe.clean-section-frame,.clean-iframe-wrap{display:none!important}
+
+.dress-stage{position:relative;width:100%;max-width:680px;margin:0 auto;overflow:visible;}
+.dress-podium-img{width:100%;display:block;object-fit:contain;position:relative;z-index:1;filter:brightness(1.05) saturate(.82);}
+.dress-sil-img{position:absolute;left:-6%;right:auto;bottom:9%;width:112%;z-index:2;filter:saturate(.88) brightness(1.04) drop-shadow(0 18px 28px rgba(93,59,23,.15));}
+.dress-spotlights{position:absolute;inset:0;pointer-events:none;z-index:3;mix-blend-mode:overlay;}
+.dress-spot-1,.dress-spot-2{position:absolute;border-radius:50%;filter:blur(22px);background:radial-gradient(ellipse at 50% 20%,rgba(255,252,230,.9) 0%,rgba(255,244,200,.5) 30%,rgba(255,235,170,.2) 55%,transparent 72%);}
+.dress-spot-1{width:38%;height:95%;animation:dressSpot1 9s ease-in-out infinite alternate;}
+.dress-spot-2{width:34%;height:88%;animation:dressSpot2 11s ease-in-out infinite alternate;animation-delay:-4s;}
+.dress-spot-floor{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);width:72%;height:65px;background:radial-gradient(ellipse at center,rgba(255,240,185,.55) 0%,transparent 70%);filter:blur(20px);animation:dressFloor 5.5s ease-in-out infinite alternate;}
+@keyframes dressSpot1{0%{left:1%;top:-10%;transform:rotate(-14deg) scaleX(.6);opacity:.75}40%{left:16%;top:-5%;transform:rotate(-5deg) scaleX(.74);opacity:1}100%{left:38%;top:-8%;transform:rotate(7deg) scaleX(.68);opacity:.78}}
+@keyframes dressSpot2{0%{right:1%;top:-8%;transform:rotate(12deg) scaleX(.58);opacity:.68}45%{right:18%;top:-3%;transform:rotate(3deg) scaleX(.72);opacity:.95}100%{right:40%;top:-10%;transform:rotate(-9deg) scaleX(.65);opacity:.7}}
+@keyframes dressFloor{from{opacity:.5;width:56%}to{opacity:1;width:74%}}
+#dressCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;}
+.story2-block-num{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(80px,20vw,140px);color:#B99048;opacity:0.12;line-height:1;margin-bottom:-30px;display:block!important;text-align:center;}
+.story2-block-label{margin-top:4px;margin-bottom:6px;letter-spacing:.28em;font-family:'Cinzel',serif;font-size:11px;color:#A77A35;}
+.story2-deco-line{margin-bottom:6px;margin-top:0;}
+#rsvp .es-copy{font-size:clamp(10px,2.4vw,13px)!important;line-height:1.4!important;margin:6px auto 10px!important;max-width:clamp(200px,52vw,340px)!important;}
+.story2-cit-text,.story2-cit-text span{font-family:'ChopinScript',cursive!important;font-size:clamp(18px,4.2vw,26px)!important;font-style:normal!important;line-height:1.7!important;color:#452819!important;}
+.story2-finale-script{font-family:'ChopinScript',cursive!important;font-size:clamp(20px,4.8vw,30px)!important;font-style:normal!important;color:#452819!important;}
+#photo-finale .es-inner{display:flex!important;flex-direction:column!important;align-items:center!important;gap:10px!important;padding:24px 18px 48px!important;}
+.final-affection{font-family:'Cormorant Garamond',serif!important;font-style:italic!important;font-size:clamp(18px,4.2vw,24px)!important;color:#674638!important;margin-bottom:0!important;text-align:center!important;}
+.final-h-names{font-family:'ChopinScript',cursive!important;font-size:clamp(38px,9vw,58px)!important;margin-top:2px!important;margin-bottom:4px!important;}
+.final-date-display{font-family:'Cinzel',serif!important;font-size:clamp(13px,3vw,16px)!important;letter-spacing:.35em!important;color:#A77A35!important;margin-bottom:16px!important;}
 </style></head>
 <body class="eventia-show-lang">
 <div id="progress-bar"></div>
@@ -938,7 +961,7 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
 <div class="es-kicker" data-i18n="thanks_kicker">REMERCIEMENTS</div>
 <h2 class="es-title" data-i18n="thanks_title">Merci de faire partie de notre histoire</h2>
 <div class="date-title-line-main"></div><div class="date-title-line-secondary"></div>
-<p class="es-copy thanks-copy-main" style="opacity:1!important;visibility:visible!important;background:none!important;-webkit-background-clip:unset!important;background-clip:unset!important;-webkit-text-fill-color:#5C3D26!important;color:#5C3D26!important;">Lorsque les lumières s'adouciront, il restera l'essentiel : les souvenirs précieux partagés avec ceux que nous aimons.</p>
+<p class="es-copy thanks-copy-main" style="opacity:1!important;visibility:visible!important;background:none!important;-webkit-background-clip:unset!important;background-clip:unset!important;-webkit-text-fill-color:#5C3D26!important;color:#5C3D26!important;">Lorsque les lumières s'adouciront, il restera l'essentiel&nbsp;: les souvenirs précieux partagés avec ceux que nous aimons.</p>
 <p class="es-copy thanks-copy-sub" style="margin-top:12px!important;opacity:1!important;visibility:visible!important;-webkit-text-fill-color:#5C3D26!important;color:#5C3D26!important;">Le plus beau chapitre de notre histoire reste encore à écrire.</p>
 </div>
 </section>
