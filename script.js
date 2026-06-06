@@ -1221,6 +1221,8 @@ function sendRsvp(){
     imp(btn,'display','inline-flex'); imp(btn,'opacity','1'); imp(btn,'visibility','visible'); imp(btn,'pointer-events','auto');
   }
   window.eventiaRevealCalendar=function(reason){ revealCalendar(reason); };
+  // Fallback : si le scratch n'est pas déclenché après 12s, affiche quand même le bouton
+  setTimeout(function(){ if(!document.body.classList.contains('eventia-calendar-final-ready')) revealCalendar('final-confetti'); },12000);
   function stayCarousel(){
     var wrap=$('#stay-wrap'), nav=$('#stay-nav'); if(!wrap||!nav) return;
     var items=$$('.c3-item',wrap), dots=$$('.c3-dot',nav); if(!items.length) return;
