@@ -451,24 +451,36 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
   backdrop-filter:blur(10px)!important;box-shadow:0 10px 24px rgba(0,0,0,.18)!important;
 }
 
-/* Hébergements natifs : compact, pas de doublon, pas d'espace énorme */
-#hebergements{padding:64px 16px 58px!important;overflow:hidden!important}
+/* Hébergements natifs : compact, cartes propres (Correction 1) */
+#hebergements{padding:56px 16px 52px!important;overflow:hidden!important}
 #hebergements .es-inner{max-width:560px!important;margin:0 auto!important;text-align:center!important}
-#hebergements .es-copy{max-width:430px!important;margin:14px auto 18px!important;line-height:1.55!important}
-#hebergements .c3-wrap{height:520px!important;max-width:430px!important;margin:16px auto 8px!important;overflow:visible!important}
-#hebergements .c3-card{width:min(82vw,330px)!important;min-height:455px!important;max-height:455px!important;margin:0 auto!important;border-radius:22px!important;overflow:hidden!important}
-#hebergements .c3-photo{height:180px!important;object-fit:cover!important}
-#hebergements .c3-body{padding:16px 16px 14px!important;gap:5px!important}
-#hebergements .c3-desc{line-height:1.38!important;margin:6px 0!important}
-#hebergements .c3-note{font-size:10px!important;line-height:1.25!important;margin-top:4px!important}
-#hebergements .c3-nav{margin-top:4px!important}
+#hebergements .es-kicker{font-family:'Cinzel',serif!important;font-size:11px!important;letter-spacing:.28em!important;color:#A77A35!important;text-transform:uppercase!important}
+#hebergements .es-title{font-family:'Cormorant Garamond',serif!important;font-weight:300!important;color:#452819!important}
+#hebergements .es-copy{max-width:430px!important;margin:14px auto 18px!important;line-height:1.55!important;font-family:'Cormorant Garamond',serif!important;font-style:italic!important;color:#674638!important}
+#hebergements .c3-wrap{height:clamp(310px,55vw,480px)!important;max-width:440px!important;margin:16px auto 8px!important;overflow:visible!important;perspective:1100px!important}
+#hebergements .c3-card{width:min(82vw,340px)!important;min-height:auto!important;max-height:none!important;margin:0 auto!important;border-radius:4px!important;overflow:hidden!important;border:1px solid rgba(183,143,67,.22)!important;box-shadow:0 6px 24px rgba(69,40,25,.08)!important}
+#hebergements .c3-item.is-active .c3-card{box-shadow:0 20px 52px rgba(69,40,25,.17),0 0 0 1px rgba(183,143,67,.28)!important}
+#hebergements .c3-photo{height:185px!important;object-fit:cover!important;border-radius:0!important}
+#hebergements .c3-body{padding:14px 16px 12px!important;gap:4px!important}
+#hebergements .c3-name{font-family:'Cormorant Garamond',serif!important;font-weight:300!important;color:#452819!important;font-size:clamp(18px,3.8vw,26px)!important}
+#hebergements .c3-desc{line-height:1.45!important;margin:4px 0!important;font-family:'Cormorant Garamond',serif!important;font-style:italic!important;color:#674638!important}
+#hebergements .c3-note{font-size:10px!important;line-height:1.3!important;margin-top:4px!important}
+#hebergements .c3-nav{margin-top:8px!important}
 
 /* Activités natives : fond harmonisé, pas de page dans la page */
 #autour.es-activities-option3{padding:64px 16px 60px!important;background:var(--eventia-bg)!important}
 #autour .es-act-card{border-radius:18px!important;width:min(560px,100%)!important;margin:0 auto!important;background:rgba(255,248,236,.52)!important}
 #autour .es-act-panorama{border-radius:14px!important;height:340px!important;margin:0 14px!important}
-#autour .es-act-selector button{border-radius:10px!important}
-#autour .es-act-head h2,#autour .es-act-copy h3{font-family:'Cormorant Garamond',serif!important}
+/* Correction 2 : onglets moins arrondis */
+#autour .es-act-selector button{border-radius:6px!important}
+/* Correction 2 : titre sur l'image en blanc crème lisible */
+#autour #esActTitle,#autour .es-act-copy h3{color:#fff5df!important}
+/* Correction 2 : typographie charte */
+#autour .es-act-head .smallcap,#autour .es-act-head [class*="kicker"]{font-family:'Cinzel',serif!important;letter-spacing:.28em!important;color:#A77A35!important;text-transform:uppercase!important}
+#autour .es-act-head h2{font-family:'Cormorant Garamond',serif!important;font-weight:300!important;color:#452819!important}
+#autour .es-act-copy h3{font-family:'Cormorant Garamond',serif!important;font-weight:300!important}
+/* Correction 2 : contraste onglet actif */
+#autour .es-act-selector button.active,#autour .es-act-selector button[class*="active"]{background:rgba(167,122,53,.22)!important;border-color:#A77A35!important;color:#452819!important}
 
 /* Timeline iframe propre */
 .timeline-host{padding-bottom:36px!important}
