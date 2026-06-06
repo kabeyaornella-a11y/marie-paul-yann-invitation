@@ -436,11 +436,30 @@ button[type="submit"],
 .eventia-main-btn:visited,.calendar-main-btn:visited{color:#2A221F!important}
 
 /* shimmer continu sans pause, sans déplacement du bloc */
-.h-names,.final-h-names{
-  position:relative!important;
+/* Prénoms héro : centrés responsive, shimmer */
+#hero .h-names{
+  position:absolute!important;
+  left:0!important;right:0!important;
+  width:100%!important;max-width:100%!important;
+  transform:none!important;
   display:block!important;
   text-align:center!important;
-  transform:none!important;
+  box-sizing:border-box!important;
+  background:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
+  background-size:260% 100%!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  animation:eventiaShimmerInfinite 4.8s linear infinite!important;
+  will-change:background-position!important;
+}
+/* Prénoms finale : centrés, même shimmer */
+.final-h-names{
+  display:block!important;
+  text-align:center!important;
+  margin:0 auto!important;
+  width:100%!important;
   background:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
   background-size:260% 100%!important;
   -webkit-background-clip:text!important;
