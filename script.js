@@ -1273,7 +1273,38 @@ function sendRsvp(){
     window.addEventListener('scroll',check,{passive:true});
     check();
   }
-  function init(){ lockShimmer(); hideCalendar(); stayCarousel(); activities(); rsvp(); seamless(); hideLangOnScroll(); }
+  function boostHeroStars(){
+    var hero=document.getElementById('hero'); if(!hero) return;
+    var extra=document.createElement('canvas');
+    extra.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:3;';
+    hero.appendChild(extra);
+    var ectx=extra.getContext('2d');
+    function fit(){var r=hero.getBoundingClientRect();extra.width=r.width*devicePixelRatio;extra.height=r.height*devicePixelRatio;extra.style.width=r.width+'px';extra.style.height=r.height+'px';ectx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}
+    fit(); window.addEventListener('resize',fit,{passive:true});
+    var stars=[];
+    function W(){return extra.width/devicePixelRatio;} function H(){return extra.height/devicePixelRatio;}
+    function spawn(){stars.push({x:Math.random()*W(),y:H()+10,s:.5+Math.random()*2.4,vy:-(.35+Math.random()*.95),vx:(Math.random()-.5)*.25,twk:Math.random()*Math.PI*2,col:Math.random()<.5?'#F9E6A8':'#FFF7D6'});}
+    function star4(ctx,x,y,r){ctx.beginPath();ctx.moveTo(x,y-r);ctx.lineTo(x+r*.25,y-r*.25);ctx.lineTo(x+r,y);ctx.lineTo(x+r*.25,y+r*.25);ctx.lineTo(x,y+r);ctx.lineTo(x-r*.25,y+r*.25);ctx.lineTo(x-r,y);ctx.lineTo(x-r*.25,y-r*.25);ctx.closePath();ctx.fill();}
+    var running=true;
+    function loop(){
+      if(!running) return;
+      ectx.clearRect(0,0,W(),H());
+      if(stars.length<110&&Math.random()<.85) spawn();
+      if(stars.length<110&&Math.random()<.55) spawn();
+      for(var i=stars.length-1;i>=0;i--){var s=stars[i];s.y+=s.vy;s.x+=s.vx;s.twk+=.07;var alpha=.35+.55*Math.abs(Math.sin(s.twk));ectx.save();ectx.globalAlpha=alpha;ectx.fillStyle=s.col;ectx.shadowColor=s.col;ectx.shadowBlur=8;star4(ectx,s.x,s.y,s.s*2.2);ectx.restore();if(s.y<-10)stars.splice(i,1);}
+      requestAnimationFrame(loop);
+    }
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){running=e.isIntersecting;if(running)loop();});});io.observe(hero);}
+    loop();
+  }
+  function wireReveal(){
+    if(!('IntersectionObserver' in window)) return;
+    var nodes=$$('h2,.es-title,.es-kicker,.gifts-presence-phrase,.thanks-chapter,#photo-finale');
+    nodes.forEach(function(n){n.classList.add('hz-reveal');});
+    var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target);}});},{threshold:.15});
+    nodes.forEach(function(n){io.observe(n);});
+  }
+  function init(){ lockShimmer(); hideCalendar(); stayCarousel(); activities(); rsvp(); seamless(); hideLangOnScroll(); boostHeroStars(); wireReveal(); }
   ready(init); setTimeout(init,250); setTimeout(init,900); setTimeout(init,1800);
   window.addEventListener('message',function(e){var d=e&&e.data||{}; if(d.type==='eventia-final-confetti-start') revealCalendar('final-confetti'); if(d.type==='eventia-timeline-height'&&d.height){var f=$('#timelineExactFrame'); if(f) f.style.minHeight=Math.max(680,Math.min(1100,d.height+20))+'px';}},false);
 })();
