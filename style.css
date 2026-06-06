@@ -602,7 +602,7 @@ body { overscroll-behavior: none; padding-bottom: var(--safe-bottom); }
   padding-top: clamp(40px, 6vh, 60px) !important;
   margin-top: 0 !important;
 }
-.c3-card { padding: clamp(14px, 2.5vw, 24px) !important; }
+/* c3-card padding géré via c3-body, pas sur la carte elle-même */
 
 
 .cards3 { display: flex !important; flex-direction: column !important; gap: 16px !important; max-width: 520px !important; margin: 24px auto 0 !important; }
@@ -2112,20 +2112,23 @@ section#photo-finale, section#histoire {
 }
 
 
+/* ══ CARROUSEL HÉBERGEMENTS — version corrigée ══ */
 .c3-wrap {
   position: relative !important;
   width: 100% !important;
-  height: clamp(440px, 68vw, 530px) !important;
+  height: clamp(300px, 52vw, 460px) !important;
   perspective: 1100px !important;
-  margin: 28px auto 16px !important;
+  margin: 0 auto 12px !important;
   overflow: visible !important;
 }
 .c3-item {
   position: absolute !important;
   top: 50% !important;
-  width: clamp(220px, 58vw, 360px) !important;
+  width: clamp(180px, 50vw, 400px) !important;
   cursor: pointer !important;
   transition: all .55s cubic-bezier(.25,.46,.45,.94) !important;
+  transform-origin: center center !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 .c3-item.is-active {
   left: 50% !important;
@@ -2136,17 +2139,17 @@ section#photo-finale, section#histoire {
 }
 .c3-item.is-prev {
   left: 50% !important;
-  transform: translate(-108%, -50%) scale(.72) translateZ(-80px) rotateY(14deg) !important;
+  transform: translate(-112%, -50%) scale(.7) translateZ(-100px) rotateY(16deg) !important;
   z-index: 5 !important;
-  opacity: .48 !important;
-  filter: brightness(.8) saturate(.55) !important;
+  opacity: .58 !important;
+  filter: brightness(.76) saturate(.62) !important;
 }
 .c3-item.is-next {
   left: 50% !important;
-  transform: translate(8%, -50%) scale(.72) translateZ(-80px) rotateY(-14deg) !important;
+  transform: translate(12%, -50%) scale(.7) translateZ(-100px) rotateY(-16deg) !important;
   z-index: 5 !important;
-  opacity: .48 !important;
-  filter: brightness(.8) saturate(.55) !important;
+  opacity: .58 !important;
+  filter: brightness(.76) saturate(.62) !important;
 }
 .c3-item.is-hidden {
   left: 50% !important;
@@ -2156,57 +2159,66 @@ section#photo-finale, section#histoire {
   pointer-events: none !important;
 }
 .c3-card {
-  background: #FBF6EE !important;
+  background: #F7EFE3 !important;
   border: 1px solid rgba(183,143,67,.22) !important;
-  border-radius: 4px !important;
+  border-radius: 2px !important;
   overflow: hidden !important;
-  box-shadow: 0 6px 28px rgba(69,40,25,.09) !important;
+  box-shadow: 0 6px 24px rgba(69,40,25,.08) !important;
+  transition: box-shadow .4s !important;
+  min-height: 430px !important;
   display: flex !important;
   flex-direction: column !important;
 }
 .c3-item.is-active .c3-card {
-  box-shadow: 0 22px 54px rgba(69,40,25,.18), 0 0 0 1px rgba(183,143,67,.3) !important;
+  box-shadow: 0 20px 52px rgba(69,40,25,.17), 0 0 0 1px rgba(183,143,67,.28) !important;
 }
 .c3-photo {
   width: 100% !important;
-  height: 180px !important;
+  height: 210px !important;
   object-fit: cover !important;
   display: block !important;
+  background: #EDE4D6 !important;
   flex: 0 0 auto !important;
 }
-.c3-body{padding:0;}
+.c3-body {
+  padding: clamp(12px,2vw,18px) clamp(14px,2.5vw,20px) clamp(14px,2vw,18px) !important;
+  text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 !important;
+}
 .c3-label {
   font-family: 'Cinzel', serif !important;
-  font-size: 9px !important;
+  font-size: clamp(8px,1.4vw,10px) !important;
   letter-spacing: 3px !important;
   color: #A77A35 !important;
   text-transform: uppercase !important;
   display: block !important;
-  margin-bottom: 3px !important;
+  margin-bottom: 4px !important;
 }
 .c3-name {
   font-family: 'Cormorant Garamond', serif !important;
-  font-size: clamp(16px, 3.6vw, 22px) !important;
+  font-size: clamp(18px, 3.8vw, 28px) !important;
   font-weight: 300 !important;
   color: #452819 !important;
   margin: 0 0 3px !important;
-  line-height: 1.15 !important;
+  line-height: 1.1 !important;
 }
 .c3-stars {
   color: #B99048 !important;
   font-size: 11px !important;
   letter-spacing: 2px !important;
   display: block !important;
-  margin-bottom: 5px !important;
+  margin-bottom: 4px !important;
 }
 .c3-desc {
   font-family: 'Cormorant Garamond', serif !important;
   font-style: italic !important;
-  font-size: clamp(12px, 2.4vw, 14px) !important;
-  line-height: 1.45 !important;
+  font-size: clamp(12px, 2.6vw, 16px) !important;
+  line-height: 1.5 !important;
   color: #674638 !important;
-  margin: 0 0 6px !important;
-  flex: 1 !important;
+  margin: 0 0 3px !important;
 }
 .c3-dist {
   font-family: 'Cinzel', serif !important;
@@ -2217,46 +2229,49 @@ section#photo-finale, section#histoire {
   display: block !important;
 }
 .c3-price {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: clamp(14px, 2.8vw, 16px) !important;
-  font-weight: 600 !important;
-  color: #452819 !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 9px !important;
+  letter-spacing: 2.2px !important;
+  color: #8E642B !important;
+  text-transform: uppercase !important;
+  margin-top: auto !important;
+  padding-top: 8px !important;
   display: block !important;
-  margin-top: 5px !important;
 }
 .c3-note {
   font-family: 'Questrial', sans-serif !important;
-  font-size: 9px !important;
-  color: rgba(69,40,25,.42) !important;
+  font-size: 10px !important;
+  line-height: 1.45 !important;
+  color: #7a5949 !important;
   display: block !important;
-  margin-top: 2px !important;
-  line-height: 1.4 !important;
+  margin-top: 3px !important;
 }
 .c3-nav {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 10px !important;
-  margin: 12px 0 0 !important;
+  margin: 10px 0 0 !important;
 }
 .c3-arrow {
-  width: 38px !important; height: 38px !important;
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(183,143,67,.4) !important;
   background: transparent !important;
   color: #8E642B !important;
-  font-size: 20px !important;
+  font-size: 18px !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  line-height: 1 !important;
-  padding: 0 !important;
-  transition: background .25s !important;
+  transition: background .2s !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 .c3-arrow:hover { background: rgba(185,144,72,.1) !important; }
 .c3-dot {
-  width: 7px !important; height: 7px !important;
+  width: 6px !important;
+  height: 6px !important;
   border-radius: 50% !important;
   background: rgba(183,143,67,.22) !important;
   border: 0 !important;
@@ -2264,7 +2279,8 @@ section#photo-finale, section#histoire {
   padding: 0 !important;
   transition: background .3s, transform .2s !important;
 }
-.c3-dot.is-active { background: #B99048 !important; transform: scale(1.4) !important; }
+.c3-dot.is-active { background: #B99048 !important; transform: scale(1.35) !important; }
+@media(max-width:640px){.c3-card{min-height:410px!important}.c3-photo{height:190px!important}.c3-item{width:min(82vw,360px)!important}}
 
 
 @media (max-width: 500px) {
@@ -8191,3 +8207,25 @@ section+section::before{content:"";position:absolute;left:0;right:0;top:0;height
 .hz-reveal{opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;}
 .hz-reveal.in-view{opacity:1;transform:translateY(0);}
 @media(prefers-reduced-motion:reduce){.hz-reveal{opacity:1!important;transform:none!important;}section+section::before{display:none;}}
+
+/* ══ Transitions invisibles entre sections — Versailles d'Or ══ */
+.es-section, .date-chapter, .countdown-chapter, .story2-chapter, .places-chapter, .dress-chapter, .gifts-chapter, .rsvp-chapter, .thanks-chapter, .program-chapter, .es-activities-option3 {
+  position: relative;
+}
+.es-section + .es-section::before,
+.date-chapter + .countdown-chapter::before,
+.countdown-chapter + .story2-chapter::before,
+#les-lieux + #programme::before,
+#dresscode + #hebergements::before,
+#hebergements + #autour::before,
+#autour + #empreintes::before,
+#empreintes + #cadeaux::before,
+#cadeaux + #rsvp::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(247,239,227,0.6), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
