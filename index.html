@@ -29,8 +29,8 @@ html,body{background:#F7EFE3;font-family:'Questrial',sans-serif;color:#452819;ov
 .es-inner{max-width:960px;margin:0 auto;}
 .line-main{width:130px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#B99048,#F3D58A,#A77A35,transparent);box-shadow:0 0 10px rgba(215,181,109,.35);}
 .line-sec{width:80px;height:1px;margin:0 auto 24px;background:linear-gradient(90deg,transparent,#F3D58A,#8E642B,transparent);opacity:.7;}
-.gold-btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 20px;border:1px solid rgba(183,143,67,.5);border-radius:999px;background:transparent;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#8E642B;text-decoration:none;transition:background .3s;cursor:pointer;margin-top:12px;}
-.gold-btn:hover{background:rgba(185,144,72,.1);}
+.gold-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:14px 28px;border:none;border-radius:999px;background:linear-gradient(135deg,#F3D391 0%,#D8AE67 50%,#B68A36 100%);font-family:'Tenor Sans',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#2A221F;text-decoration:none;box-shadow:0 14px 32px rgba(180,138,50,.28);transition:transform .2s,box-shadow .2s;cursor:pointer;margin-top:12px;}
+.gold-btn:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(180,138,50,.36);}
 
 /* ══ SÉPARATEUR — ligne or simple, pas de cœur ══ */
 .sep-line{
@@ -405,22 +405,35 @@ html,body{background:var(--eventia-bg)!important;overflow-x:hidden!important}
 section.es-section, section.scene, .date-chapter, .countdown-chapter, .story2-chapter, .places-chapter, .dress-chapter, .gifts-chapter, .rsvp-chapter, .thanks-chapter, .final-chapter{background:linear-gradient(180deg,rgba(247,239,227,.98),rgba(247,239,227,.98))!important}
 section{scroll-margin-top:0}
 
-/* bouton référence = revivre l'expérience */
+/* bouton référence = revivre l'expérience — gradient doré harmonisé */
 .eventia-main-btn,
 .calendar-main-btn,
+.gold-btn,
+.cal-btn,
+.eventia-calendar-btn,
 .cta,
 button[type="submit"],
 .rsvp-submit,
+#rsvp-btn,
+.place-btn,
 .es-act-selector button.active{
-  border:1px solid rgba(184,138,58,.72)!important;
-  color:#fff7df!important;
-  background:linear-gradient(135deg,#8b5e24 0%,#c79a45 42%,#f1d586 55%,#a06f28 100%)!important;
-  box-shadow:0 10px 28px rgba(117,74,26,.24), inset 0 1px 0 rgba(255,255,255,.45)!important;
-  text-shadow:0 1px 1px rgba(55,32,8,.25)!important;
+  border:none!important;
+  color:#2A221F!important;
+  background:linear-gradient(135deg,#F3D391 0%,#D8AE67 50%,#B68A36 100%)!important;
+  box-shadow:0 14px 32px rgba(180,138,50,.28)!important;
+  text-shadow:none!important;
   text-decoration:none!important;
+  border-radius:999px!important;
+  padding:14px 28px!important;
+  font-family:'Tenor Sans',sans-serif!important;
+  font-size:12px!important;
+  letter-spacing:.2em!important;
+  text-transform:uppercase!important;
+  transition:transform .2s,box-shadow .2s!important;
 }
-.eventia-main-btn:active,.calendar-main-btn:active,.cta:active,button[type="submit"]:active,.rsvp-submit:active{transform:translateY(1px)!important;filter:none!important;background:linear-gradient(135deg,#8b5e24 0%,#c79a45 42%,#f1d586 55%,#a06f28 100%)!important;color:#fff7df!important}
-.eventia-main-btn:visited,.calendar-main-btn:visited{color:#fff7df!important}
+.eventia-main-btn:hover,.calendar-main-btn:hover,.cal-btn:hover,.eventia-calendar-btn:hover,.place-btn:hover,.rsvp-submit:hover,#rsvp-btn:hover{transform:translateY(-2px)!important;box-shadow:0 18px 38px rgba(180,138,50,.36)!important;}
+.eventia-main-btn:active,.calendar-main-btn:active,.cta:active,button[type="submit"]:active,.rsvp-submit:active,#rsvp-btn:active,.place-btn:active{transform:translateY(1px)!important;filter:none!important;background:linear-gradient(135deg,#F3D391 0%,#D8AE67 50%,#B68A36 100%)!important;color:#2A221F!important}
+.eventia-main-btn:visited,.calendar-main-btn:visited{color:#2A221F!important}
 
 /* shimmer continu sans pause, sans déplacement du bloc */
 .h-names,.final-h-names{
@@ -434,10 +447,13 @@ button[type="submit"],
   background-clip:text!important;
   color:transparent!important;
   -webkit-text-fill-color:transparent!important;
-  animation:eventiaShimmerInfinite 3.8s linear infinite!important;
+  animation:eventiaShimmerInfinite 4.8s linear infinite!important;
   will-change:background-position!important;
 }
 @keyframes eventiaShimmerInfinite{0%{background-position:260% 50%}100%{background-position:-260% 50%}}
+
+/* Hero intro text: taille +15%, centré */
+#hero .h-intro,#txt-intro{font-size:clamp(8px,1.9vw,16px)!important;text-align:center!important;}
 
 /* Langue visible opening/hero, masquée dès scroll via JS */
 .lang-sw{transition:opacity .35s ease, transform .35s ease!important}
@@ -487,15 +503,29 @@ body.eventia-scrolled .lang-sw{opacity:0!important;pointer-events:none!important
 .master-timeline-wrap,.timeline-exact-wrapper{height:auto!important;overflow:hidden!important;background:transparent!important;margin:0 auto!important;max-width:560px!important}
 
 /* Enveloppe V13 compacte */
-#empreintes{padding:56px 14px 46px!important;overflow:hidden!important}
+#empreintes{padding:56px 14px 24px!important;overflow:hidden!important;background:#F7EFE3!important;}
 #empreintes .es-inner{max-width:560px!important;margin:0 auto!important}
 .master-envelope-wrap,.envelope-v13-host{height:auto!important;min-height:0!important;margin:10px auto 0!important;overflow:hidden!important;background:transparent!important}
+.envelope-v13-host{filter:drop-shadow(0 16px 32px rgba(69,40,25,.15))!important;}
+#empreintes .es-copy{margin-bottom:4px!important;}
 
 /* Respiration sections : réduire blancs fantômes */
 #compte-a-rebours{padding-bottom:42px!important}
 #notre-histoire{padding-top:48px!important}
 #rsvp{padding-bottom:36px!important;margin-bottom:0!important}
 #remerciements{padding-top:40px!important;margin-top:0!important}
+
+/* RSVP : formulaire dans l'ouverture du rideau */
+#rsvp .es-inner{position:relative!important;width:clamp(240px,58vw,380px)!important;max-width:380px!important;margin:0 auto!important;padding:clamp(160px,26vw,220px) 0 0!important;background:transparent!important;z-index:3!important;}
+
+/* Remerciements : cadre centré */
+#photo-finale,#remerciements .final-photo-wrap,#remerciements img{display:block!important;margin:0 auto!important;text-align:center!important;}
+.final-photo-wrap{display:flex!important;justify-content:center!important;align-items:center!important;}
+
+/* Notre Histoire : chiffres romains derrière le texte, espace réduit */
+.story2-ghost-num{z-index:0!important;}
+.story2-text>*:not(.story2-ghost-num){position:relative!important;z-index:1!important;}
+.story2-block.story2-opening{padding-top:0!important;}
 
 /* Supprimer anciens habillages iframe pour sections remplacées */
 .eventia-iframe-section iframe.clean-section-frame,.clean-iframe-wrap{display:none!important}

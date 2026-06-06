@@ -235,7 +235,12 @@ function startEventiaMusic(){
 
 
 (function(){
-  function hideInst(){var el=document.querySelector('#notre-date .date-instruction-below'); if(el) el.classList.add('is-hidden-after-scratch');}
+  function hideInst(){
+    var inst=document.querySelector('.date-instruction');
+    if(!inst) inst=document.querySelector('#notre-date .date-instruction-below');
+    if(inst){ inst.style.transition='opacity .6s'; inst.style.opacity='0'; setTimeout(function(){ if(inst) inst.style.display='none'; },600); }
+    var el=document.querySelector('#notre-date .date-instruction-below'); if(el) el.classList.add('is-hidden-after-scratch');
+  }
   window.addEventListener('message',function(e){ if(e.data && (e.data.type==='eventia-scratch-start'||e.data.type==='eventia-scratch-complete')) hideInst(); });
 })();
 
@@ -1186,7 +1191,7 @@ function sendRsvp(){
   function imp(el,p,v){ if(el) el.style.setProperty(p,v,'important'); }
   function makeICS(){
     return 'data:text/calendar;charset=utf-8,'+encodeURIComponent([
-      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Eventia Signature//Marie-Paul Yann//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:marie-paul-yann-20270522@eventiasignature.fr','DTSTAMP:20260605T120000Z','DTSTART;VALUE=DATE:20270522','DTEND;VALUE=DATE:20270523','SUMMARY:Mariage de Marie-Paul & Yann','LOCATION:Mairie de Gennevilliers puis Domaine des Rois','DESCRIPTION:Réservez cette journée précieuse pour célébrer Marie-Paul et Yann.','END:VEVENT','END:VCALENDAR'
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Eventia Signature//Marie-Paul Yann//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:marie-paul-yann-20270522@eventiasignature.fr','DTSTAMP:20260605T120000Z','DTSTART;VALUE=DATE:20270522','DTEND;VALUE=DATE:20270523','SUMMARY:Mariage de Marie-Paul et Yann','LOCATION:Mairie de Gennevilliers puis Domaine des Rois','DESCRIPTION:Cérémonie civile 13h00 Mairie de Gennevilliers. Bénédiction nuptiale et réception au Domaine des Rois.','END:VEVENT','END:VCALENDAR'
     ].join('\r\n'));
   }
   function lockShimmer(){
@@ -1299,12 +1304,53 @@ function sendRsvp(){
   }
   function wireReveal(){
     if(!('IntersectionObserver' in window)) return;
-    var nodes=$$('h2,.es-title,.es-kicker,.gifts-presence-phrase,.thanks-chapter,#photo-finale');
+    var nodes=$$('h2,.es-title,.es-kicker,.es-copy,.gifts-presence-phrase,.thanks-chapter,#photo-finale');
     nodes.forEach(function(n){n.classList.add('hz-reveal');});
     var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target);}});},{threshold:.15});
     nodes.forEach(function(n){io.observe(n);});
   }
-  function init(){ lockShimmer(); hideCalendar(); stayCarousel(); activities(); rsvp(); seamless(); hideLangOnScroll(); boostHeroStars(); wireReveal(); }
+  function addRevealClass(){
+    document.querySelectorAll('.es-kicker,.es-title,.es-copy').forEach(function(el){
+      if(!el.classList.contains('hz-reveal')) el.classList.add('hz-reveal');
+    });
+  }
+  function init(){ lockShimmer(); hideCalendar(); stayCarousel(); activities(); rsvp(); seamless(); hideLangOnScroll(); boostHeroStars(); wireReveal(); addRevealClass(); }
   ready(init); setTimeout(init,250); setTimeout(init,900); setTimeout(init,1800);
-  window.addEventListener('message',function(e){var d=e&&e.data||{}; if(d.type==='eventia-final-confetti-start') revealCalendar('final-confetti'); if(d.type==='eventia-timeline-height'&&d.height){var f=$('#timelineExactFrame'); if(f) f.style.minHeight=Math.max(680,Math.min(1100,d.height+20))+'px';}},false);
+  window.addEventListener('message',function(e){var d=e&&e.data||{}; if(d.type==='eventia-final-confetti-start'){ setTimeout(function(){ revealCalendar('final-confetti'); var btn=$('#calendarBtnParent'); if(btn){ btn.removeAttribute('data-eventia-v53'); btn.removeAttribute('data-eventia-v54'); } },1200); } if(d.type==='eventia-timeline-height'&&d.height){var f=$('#timelineExactFrame'); if(f) f.style.minHeight=Math.max(680,Math.min(1100,d.height+20))+'px';}},false);
+})();
+
+// Animation "Oui avec joie" — shimmer + étoiles nacrées
+(function(){
+  function ouiStars(btn){
+    var r = btn.getBoundingClientRect();
+    var cx = r.left + r.width/2, cy = r.top + r.height/2;
+    var emailInput = document.querySelector('#rsvp-form input[type="email"], #rsvp-form input[name="email"], #rsvp-form .rsvp-email');
+    var targetY = emailInput ? emailInput.getBoundingClientRect().top : cy - 80;
+    var colors = ['#F8D77E','#FFF0C2','#E8D8A8','#FFFFFF','#F3D391','#D8AE67','#FFF7DD'];
+    for(var i=0; i<18; i++){
+      (function(i){
+        var star = document.createElement('div');
+        var sz = 2 + Math.random()*4;
+        var angle = -Math.PI/2 + (Math.random()-.5)*Math.PI*0.8;
+        var dist = 30 + Math.random()*60;
+        var tx = Math.cos(angle)*dist, ty = Math.sin(angle)*dist - (cy - targetY)*0.6;
+        star.style.cssText = 'position:fixed;left:'+cx+'px;top:'+cy+'px;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+colors[Math.floor(Math.random()*colors.length)]+';pointer-events:none;z-index:9999;opacity:0;box-shadow:0 0 '+sz+'px rgba(255,236,175,.8)';
+        document.body.appendChild(star);
+        star.animate([
+          {transform:'translate(-50%,-50%) scale(0)',opacity:0},
+          {transform:'translate(calc(-50% + '+tx*0.3+'px),calc(-50% + '+ty*0.3+'px)) scale(1)',opacity:1,offset:0.2},
+          {transform:'translate(calc(-50% + '+tx+'px),calc(-50% + '+ty+'px)) scale(0.3)',opacity:0}
+        ],{duration:600+Math.random()*500,delay:i*30,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'})
+        .onfinish=function(){if(star.parentNode)star.parentNode.removeChild(star);};
+      })(i);
+    }
+    // Shimmer flash sur le bouton
+    btn.style.transition='box-shadow .1s';
+    btn.style.boxShadow='0 0 0 4px rgba(243,211,145,.6), 0 14px 32px rgba(180,138,50,.4)';
+    setTimeout(function(){btn.style.boxShadow='';btn.style.transition='';},400);
+  }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.presence-pill[data-val="oui"],.presence-pill:first-child');
+    if(btn && btn.textContent.toLowerCase().includes('joie')) ouiStars(btn);
+  });
 })();
