@@ -36,24 +36,27 @@ function setLang(l){
   if(el('cta-text')) el('cta-text').textContent = t.cta;
   document.querySelectorAll('#lang-sw button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lang')===l);});
 }
+var ICON_SND_ON='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+var ICON_SND_OFF='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+function setMusicBtns(playing){['mus-btn','hero-mus-btn'].forEach(function(id){var b=document.getElementById(id);if(b){b.innerHTML=playing?ICON_SND_ON:ICON_SND_OFF;b.classList.toggle('is-playing',!!playing);}});}
 function toggleMusic(){
-  var a=document.getElementById('audio'),b=document.getElementById('mus-btn');
+  var a=document.getElementById('audio');
   if(!a)return;
   if(a.paused){
     a.volume=0.22;
-    a.play().then(function(){ if(b){b.textContent='♫';b.classList.add('is-playing');} }).catch(function(){});
+    a.play().then(function(){ setMusicBtns(true); }).catch(function(){});
   } else {
     a.pause();
-    if(b){b.textContent='♪';b.classList.remove('is-playing');}
+    setMusicBtns(false);
   }
 }
 function startEventiaMusic(){
-  var a=document.getElementById('audio'),b=document.getElementById('mus-btn');
+  var a=document.getElementById('audio');
   if(!a)return;
   try{ a.volume=0.22; a.currentTime = a.currentTime || 0; }catch(e){}
   var p=a.play();
-  if(p && p.then){ p.then(function(){ if(b){b.textContent='♫';b.classList.add('is-playing');} }).catch(function(){}); }
-  else { if(b){b.textContent='♫';b.classList.add('is-playing');} }
+  if(p && p.then){ p.then(function(){ setMusicBtns(true); }).catch(function(){}); }
+  else { setMusicBtns(true); }
 }
 
 /* ═══ PORTE ═══ */
@@ -731,10 +734,8 @@ function sendRsvp(){
 (function(){
   function syncMusicButton(){
     var a=document.getElementById('audio');
-    var b=document.getElementById('mus-btn');
-    if(!a||!b)return;
-    if(a.paused){ b.textContent='♪'; b.classList.remove('is-playing'); }
-    else { b.textContent='♫'; b.classList.add('is-playing'); }
+    if(!a)return;
+    setMusicBtns(!a.paused);
   }
   window.addEventListener('DOMContentLoaded',function(){
     var a=document.getElementById('audio');
@@ -791,8 +792,7 @@ function sendRsvp(){
     if(a&&a.paused){
       a.play().then(function(){
         _ms=true;
-        var b=document.getElementById('mus-btn');
-        if(b)b.textContent='♪';
+        setMusicBtns(true);
       }).catch(function(){});
     }
   }
@@ -1176,533 +1176,104 @@ function sendRsvp(){
 })();
 
 
-/* ===== PATCH V44 ===== */
+
+/* ===== EVENTIA V52 STABLE — remplace tous les patchs V44→V51 ===== */
 
 (function(){
   'use strict';
-
-  function updateContainerVars(){
-    qa('.es-section,#hero,#rsvp,.story2-block,.date-chapter,.countdown-chapter,.program-chapter,.final-chapter').forEach(function(el){
-      var r=el.getBoundingClientRect();
-      el.style.setProperty('--container-w', r.width+'px');
-      el.style.setProperty('--container-h', r.height+'px');
-      el.dataset.cw=Math.round(r.width); el.dataset.ch=Math.round(r.height);
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn,{once:true}); else fn(); }
+  function imp(el,p,v){ if(el) el.style.setProperty(p,v,'important'); }
+  function makeICS(){
+    return 'data:text/calendar;charset=utf-8,'+encodeURIComponent([
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Eventia Signature//Marie-Paul Yann//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:marie-paul-yann-20270522@eventiasignature.fr','DTSTAMP:20260605T120000Z','DTSTART;VALUE=DATE:20270522','DTEND;VALUE=DATE:20270523','SUMMARY:Mariage de Marie-Paul & Yann','LOCATION:Mairie de Gennevilliers puis Domaine des Rois','DESCRIPTION:Réservez cette journée précieuse pour célébrer Marie-Paul et Yann.','END:VEVENT','END:VCALENDAR'
+    ].join('\r\n'));
+  }
+  function lockShimmer(){
+    $$('#hero .h-names,.h-names,#photo-finale .final-h-names,.final-h-names').forEach(function(el){
+      el.classList.add('eventia-shimmer-v52');
+      imp(el,'background-image','linear-gradient(90deg,#7A4B20 0%,#B99048 9%,#F3D58A 18%,#FFF7D6 26%,#F3D58A 34%,#B99048 44%,#7A4B20 52%,#B99048 62%,#F3D58A 72%,#FFF7D6 82%,#B99048 92%,#7A4B20 100%)');
+      imp(el,'background-size','400% 100%'); imp(el,'background-repeat','repeat-x'); imp(el,'background-position','0% 50%');
+      imp(el,'-webkit-background-clip','text'); imp(el,'background-clip','text'); imp(el,'-webkit-text-fill-color','transparent'); imp(el,'color','transparent');
+      imp(el,'animation-name','eventiaV52NameShimmer'); imp(el,'animation-duration','4.8s'); imp(el,'animation-timing-function','linear'); imp(el,'animation-iteration-count','infinite'); imp(el,'animation-direction','normal'); imp(el,'animation-fill-mode','none'); imp(el,'animation-play-state','running');
     });
+    var intro=$('#txt-intro')||$('#hero .h-intro');
+    if(intro){ intro.textContent='VOUS ÊTES CONVIÉS À LA CÉLÉBRATION DU MARIAGE DE'; imp(intro,'white-space','nowrap'); imp(intro,'width','100vw'); imp(intro,'max-width','100vw'); imp(intro,'left','50%'); imp(intro,'transform','translate3d(-50%,0,0)'); imp(intro,'font-size','clamp(7px,2vw,13px)'); imp(intro,'letter-spacing','0'); }
   }
-
-  function forceVerse(){
-    var c=q('.story2-citation'), t=q('.story2-cit-text'), ref=q('.story2-cit-ref');
-    if(t){
-      t.innerHTML="<span>« Ainsi ils ne sont plus deux, mais une seule chair.</span><span>Que l’homme donc ne sépare pas ce que Dieu a uni. »</span>";
-      t.style.setProperty('display','block','important');t.style.setProperty('visibility','visible','important');t.style.setProperty('opacity','1','important');t.style.setProperty('clip-path','none','important');t.style.setProperty('transform','none','important');
-      qa('span',t).forEach(function(s){
-        s.style.setProperty('opacity','1','important');s.style.setProperty('clip-path','inset(0 0 0 0)','important');s.style.setProperty('transform','none','important');s.style.setProperty('animation','none','important');
-      });
-    }
-    if(ref) ref.textContent='Matthieu 19:6';
-    if(c){ c.style.setProperty('display','block','important');c.style.setProperty('visibility','visible','important');c.style.setProperty('opacity','1','important');c.style.setProperty('transform','none','important');c.classList.add('s2-in','in-view','is-swept'); }
-  }
-
-  function forceShimmer(){
-    qa('.h-names,.final-h-names').forEach(function(el){
-      el.style.setProperty('font-family',"'ChopinScript','Great Vibes',cursive",'important');
-      el.style.setProperty('background','linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)','important');
-      el.style.setProperty('background-size','300% 100%','important');
-      el.style.setProperty('-webkit-background-clip','text','important');
-      el.style.setProperty('background-clip','text','important');
-      el.style.setProperty('-webkit-text-fill-color','transparent','important');
-      el.style.setProperty('color','transparent','important');
-      el.style.setProperty('animation','eventiaV44Shimmer 3.5s linear infinite','important');
-    });
-  }
-
-  function tuneHeroStars(){
-    var hero=q('#hero'); if(!hero) return;
-    var snow=q('.hero-snow',hero);
-    if(!snow){
-      snow=document.createElement('div'); snow.className='hero-snow';
-      var content=q('.hero-content',hero); hero.insertBefore(snow, content||hero.firstChild);
-    }
-    if(snow.children.length<120){
-      for(var i=snow.children.length;i<120;i++){snow.appendChild(document.createElement('i'));}
-    }
-    qa('i',snow).forEach(function(p){
-      p.style.left=(Math.random()*100).toFixed(2)+'%';
-      p.style.setProperty('animation-duration',(11+Math.random()*18).toFixed(1)+'s','important');
-      p.style.animationDelay=(-Math.random()*22).toFixed(2)+'s';
-      p.style.setProperty('--extraDur','0s');
-      p.style.setProperty('--drift',((Math.random()*44)-22).toFixed(1)+'px');
-      p.style.setProperty('opacity',(0.55+Math.random()*0.45).toFixed(2));
-    });
-  }
-
-  function tuneDressStars(){
-    var stage=q('.dress-stage'); if(!stage) return;
-    var snow=q('.dress-snow',stage);
-    if(!snow){snow=document.createElement('div');snow.className='dress-snow';stage.appendChild(snow);}
-    var N=32;
-    if(snow.children.length<N){for(var i=snow.children.length;i<N;i++){snow.appendChild(document.createElement('i'));}}
-    qa('i',snow).forEach(function(p){
-      p.style.left=(Math.random()*100).toFixed(2)+'%';
-      p.style.setProperty('animation-duration',(8+Math.random()*14).toFixed(1)+'s','important');
-      p.style.animationDelay=(-Math.random()*16).toFixed(2)+'s';
-      p.style.setProperty('--drift',((Math.random()*30)-15).toFixed(1)+'px');
-      p.style.setProperty('opacity',(0.35+Math.random()*0.5).toFixed(2));
-    });
-  }
-
-  function fastConfettiLayer(cx,cy,count){
-    var layer=document.createElement('div');
-    layer.className='eventia-final-confetti-layer';
-    layer.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:2147483647;overflow:hidden';
-    document.body.appendChild(layer);
-    var colors=['#F9E6A8','#E5C36F','#C89A3D','#A86E18','#F6F0DB','#D8B663','#FFF7D6','#ffffff'];
-    for(var i=0;i<count;i++){
-      var e=document.createElement('i'), a=Math.random()*Math.PI*2, d=90+Math.random()*280, sz=2+Math.random()*5, dust=Math.random()<.28;
-      e.style.cssText='position:fixed;left:'+cx+'px;top:'+cy+'px;width:'+(dust?sz:sz*1.8)+'px;height:'+(dust?sz:Math.max(2,sz*.75))+'px;border-radius:'+(dust?'50%':'2px')+';background:'+colors[i%colors.length]+';box-shadow:0 0 10px rgba(245,214,135,.55);opacity:0;will-change:transform,opacity';
-      layer.appendChild(e);
-      e.animate([{transform:'translate(0,0) rotate(0deg) scale(.7)',opacity:0},{transform:'translate('+(Math.cos(a)*d*.3)+'px,'+(Math.sin(a)*d*.2-80)+'px) rotate(180deg) scale(1.05)',opacity:1,offset:.15},{transform:'translate('+(Math.cos(a)*d)+'px,'+(Math.sin(a)*d+90)+'px) rotate('+((Math.random()-.5)*860)+'deg) scale(.32)',opacity:0}],{duration:320+Math.random()*130,delay:Math.random()*18,easing:'ease-out',fill:'none'});
-    }
-    setTimeout(function(){layer.remove();},1100);
-  }
-  function finalConfetti(){
-    var pts=[[.2,.45],[.5,.35],[.8,.45],[.35,.62],[.65,.62]];
-    [0,90,200].forEach(function(delay){setTimeout(function(){pts.forEach(function(p,i){setTimeout(function(){fastConfettiLayer(innerWidth*p[0],innerHeight*p[1],36);},i*8);});},delay);});
-  }
-  window.eventiaFinalConfetti=finalConfetti;
-
-  function wireRsvp(){
-    qa('#rsvp input[name="presence"][value="oui"]').forEach(function(input){
-      if(input.dataset.eventiaV44) return; input.dataset.eventiaV44='1';
-      input.addEventListener('change',function(){
-        if(!input.checked) return;
-        var label=input.closest('label')||input.parentElement;
-        var r=label?label.getBoundingClientRect():null;
-        var cx=r?(r.left+r.width/2):innerWidth/2, cy=r?(r.top+r.height/2):innerHeight*.4;
-        fastConfettiLayer(cx,cy,90);
-        setTimeout(function(){fastConfettiLayer(cx-50,cy-10,65);},100);
-        setTimeout(function(){fastConfettiLayer(cx+50,cy-10,65);},190);
-        setTimeout(function(){fastConfettiLayer(cx,cy-20,50);},300);
-      });
-    });
-    var title=q('#rsvp .es-title'); if(title) title.innerHTML='Votre présence,<br>notre honneur';
-  }
-
-  function addCalendarButton(){
-    var btn=q('#calendarBtnParent');
-    if(!btn) return;
-    var ics=[
-      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Eventia Signature//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
-      'UID:mariepaulyann-20270522@eventiasignature.fr','SUMMARY:Mariage Marie-Paul & Yann','DTSTART;VALUE=DATE:20270522','DTEND;VALUE=DATE:20270523',
-      'LOCATION:Château des Hauts de Provins + Mairie de Gennevilliers',
-      'DESCRIPTION:Le mariage de Marie-Paul & Yann — 22 Mai 2027\\nChâteau des Hauts de Provins + Mairie de Gennevilliers',
-      'STATUS:CONFIRMED','TRANSP:OPAQUE','END:VEVENT','END:VCALENDAR'
-    ].join('\r\n');
-    try{btn.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'}));btn.download='mariage-marie-paul-yann.ics';}catch(e){}
-  }
-
-  function normalizeTextPunctuation(){
-    var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){
-      var p=node.parentNode; if(!p) return NodeFilter.FILTER_REJECT;
-      var tag=p.nodeName; if(/^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT|OPTION)$/i.test(tag)) return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }});
-    var n; while(n=walker.nextNode()){
-      n.nodeValue=n.nodeValue.replace(/\s[–—]\s/g, ', ').replace(/\s-\s/g, ', ');
+  function hideCalendar(){
+    var btn=$('#calendarBtnParent'); if(!btn) return;
+    if(!document.body.classList.contains('eventia-calendar-final-ready')){
+      btn.href='#'; btn.setAttribute('aria-hidden','true'); btn.classList.remove('eventia-revealed','eventia-calendar-ready');
+      imp(btn,'display','none'); imp(btn,'opacity','0'); imp(btn,'visibility','hidden'); imp(btn,'pointer-events','none');
     }
   }
-
-  function improveLoading(){
-    qa('img').forEach(function(img){ if(!img.hasAttribute('loading')) img.setAttribute('loading','lazy'); img.setAttribute('decoding','async'); });
-    qa('iframe').forEach(function(f){ if(!/scratch|countdown/i.test(f.src||'')) f.setAttribute('loading','lazy'); });
+  function revealCalendar(reason){
+    if(reason!=='final-confetti' && reason!==true) return;
+    var btn=$('#calendarBtnParent'); if(!btn) return;
+    btn.href=makeICS(); btn.download='mariage-marie-paul-yann.ics'; btn.setAttribute('aria-hidden','false');
+    document.body.classList.add('eventia-calendar-final-ready');
+    btn.classList.add('eventia-revealed','eventia-calendar-ready');
+    imp(btn,'display','inline-flex'); imp(btn,'opacity','1'); imp(btn,'visibility','visible'); imp(btn,'pointer-events','auto');
   }
-
-  function applyLangFinal(lang){
-    document.documentElement.lang=lang==='en'?'en':'fr';
-    qa('#lang-sw button').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
-    if(typeof window.setLang==='function' && !window.setLang._eventiaV44){ try{ window.setLang(lang); }catch(e){} }
-  }
-  var previousSetLang=window.setLang;
-  window.setLang=function(lang){
-    lang=(lang==='en')?'en':'fr';
-    if(previousSetLang && previousSetLang!==window.setLang){ try{ previousSetLang(lang); }catch(e){} }
-    applyLangFinal(lang);
-    forceVerse(); forceShimmer(); wireRsvp(); addCalendarButton();
-    document.querySelectorAll('iframe').forEach(function(f){try{f.contentWindow.postMessage({type:'setLang',lang:lang},'*');}catch(e){}});
-  };
-  window.setLang._eventiaV44=true;
-
-  ready(function(){
-    updateContainerVars(); forceVerse(); forceShimmer(); tuneHeroStars(); tuneDressStars(); wireRsvp(); addCalendarButton(); normalizeTextPunctuation(); improveLoading();
-    setTimeout(function(){forceVerse();forceShimmer();tuneHeroStars();tuneDressStars();},500);
-    setTimeout(function(){forceVerse();forceShimmer();updateContainerVars();},1400);
-  });
-  window.addEventListener('resize',function(){updateContainerVars();},{passive:true});
-  window.eventiaRevealCalendar=function(){
-    var btn=document.getElementById('calendarBtnParent');
-    if(!btn||btn._revealed) return; btn._revealed=true;
-    var sEl=document.createElement('style');
-    sEl.textContent='#calendarBtnParent{display:inline-flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;margin-top:16px!important;}';
-    document.head.appendChild(sEl);
-    btn.classList.add('eventia-revealed');
-    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},300);
-    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function') window.eventiaFinalConfetti();},1000);
-  };
-  window.addEventListener('message',function(e){
-    if(!e.data) return;
-    var t=e.data.type, a=e.data.action;
-    if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
-      if(typeof window.eventiaRevealCalendar==='function') window.eventiaRevealCalendar();
+  window.eventiaRevealCalendar=function(reason){ revealCalendar(reason); };
+  function stayCarousel(){
+    var wrap=$('#stay-wrap'), nav=$('#stay-nav'); if(!wrap||!nav) return;
+    var items=$$('.c3-item',wrap), dots=$$('.c3-dot',nav); if(!items.length) return;
+    var active=items.findIndex(function(x){return x.classList.contains('is-active')}); if(active<0) active=0;
+    function render(){
+      items.forEach(function(it,i){ it.classList.remove('is-active','is-prev','is-next','is-hidden'); if(i===active) it.classList.add('is-active'); else it.classList.add('is-hidden'); it.setAttribute('aria-hidden',i===active?'false':'true'); });
+      dots=$$('.c3-dot',nav); dots.forEach(function(d,i){d.classList.toggle('is-active',i===active); d.setAttribute('aria-current',i===active?'true':'false');});
     }
-  });
-})();
-
-
-/* === PHASE 3 — Bouton langue : contrôleur unique === */
-(function() {
-  function syncLang() {
-    var y = window.scrollY || document.documentElement.scrollTop || 0;
-    var hidden = y > 0;
-    document.body.classList.toggle('lang-hidden',         hidden);
-    document.body.classList.toggle('eventia-lang-hidden', hidden);
-    document.body.classList.toggle('eventia-hide-lang',   hidden);
-    document.body.classList.toggle('eventia-scrolled',    hidden);
-    document.body.classList.toggle('eventia-show-lang',   !hidden);
-    var nav = document.getElementById('topnav');
-    if (nav) nav.classList.toggle('eventia-lang-hidden', hidden);
-    var langSw = document.getElementById('lang-sw');
-    if (langSw) {
-      langSw.style.setProperty('opacity',        hidden ? '0' : '1',       'important');
-      langSw.style.setProperty('visibility',     hidden ? 'hidden' : 'visible', 'important');
-      langSw.style.setProperty('pointer-events', hidden ? 'none' : 'auto', 'important');
-      langSw.style.setProperty('display',        'flex',                    'important');
-    }
-  }
-  window.addEventListener('scroll', syncLang, {passive: true});
-  ready(function() {
-    var langSw = document.getElementById('lang-sw');
-    if (langSw) langSw.style.setProperty('transition', 'opacity 0.22s ease, visibility 0.22s ease', 'important');
-    syncLang();
-  });
-})();
-
-
-/* === Dress code inline — canvas scintilles === */
-(function(){
-  ready(function(){
-    var canvas=document.getElementById('dressCanvas');
-    var wrap=document.getElementById('dressWrapInline');
-    if(!canvas||!wrap) return;
-    var ctx=canvas.getContext('2d');
-    var particles=[];
-    function resize(){canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight||Math.round(wrap.offsetWidth*.55);}
-    resize();
-    window.addEventListener('resize',resize,{passive:true});
-    var COLORS=['rgba(255,248,210,','rgba(243,213,138,','rgba(255,255,235,','rgba(216,174,103,'];
-    function spawn(){return{x:Math.random()*canvas.width,y:-8,size:.8+Math.random()*2.2,speedY:.18+Math.random()*.45,speedX:(Math.random()-.5)*.4,opacity:0,maxOpacity:.4+Math.random()*.55,color:COLORS[Math.floor(Math.random()*COLORS.length)],life:0,maxLife:260+Math.random()*220,twinkleSpeed:.02+Math.random()*.04};}
-    for(var i=0;i<28;i++){var p=spawn();p.y=Math.random()*canvas.height;p.life=Math.random()*p.maxLife;particles.push(p);}
-    function draw(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      if(particles.length<40&&Math.random()<.18) particles.push(spawn());
-      for(var i=particles.length-1;i>=0;i--){
-        var p=particles[i];p.life++;p.y+=p.speedY;p.x+=p.speedX+Math.sin(p.life*.04)*.3;
-        var lr=p.life/p.maxLife;
-        if(lr<.15) p.opacity=(lr/.15)*p.maxOpacity;
-        else if(lr>.75) p.opacity=((1-lr)/.25)*p.maxOpacity;
-        else p.opacity=p.maxOpacity;
-        p.opacity*=(.7+.3*Math.sin(p.life*p.twinkleSpeed*Math.PI*2));
-        ctx.save();ctx.globalAlpha=Math.max(0,p.opacity);
-        ctx.fillStyle=p.color+p.opacity+')';ctx.shadowColor=p.color+'0.8)';ctx.shadowBlur=p.size*3;
-        ctx.translate(p.x,p.y);ctx.beginPath();
-        var s=p.size;
-        ctx.moveTo(0,-s*2.2);ctx.lineTo(s*.4,-s*.4);ctx.lineTo(s*2.2,0);ctx.lineTo(s*.4,s*.4);ctx.lineTo(0,s*2.2);ctx.lineTo(-s*.4,s*.4);ctx.lineTo(-s*2.2,0);ctx.lineTo(-s*.4,-s*.4);ctx.closePath();ctx.fill();ctx.restore();
-        if(p.life>=p.maxLife||p.y>canvas.height+10) particles.splice(i,1);
-      }
-      requestAnimationFrame(draw);
-    }
-    draw();
-  });
-})();
-
-
-/* ===== PATCH V51 — Correctif intégral ===== */
-(function(){
-'use strict';
-
-/* ── Utilitaire DOMReady ── */
-function whenReady(fn){
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn,{once:true});
-  else fn();
-}
-
-/* ══════════════════════════════════════════════════════
-   1. SHIMMER — rAF complet : toutes propriétés à chaque frame
-   Le rAF définit `background` (shorthand, position implicite=0%)
-   puis immédiatement `background-position` (longhand explicite, GAGNE).
-   Ainsi même après forceShimmer (background:shorthand inline !important),
-   la frame suivante restaure tout en <16ms.
-══════════════════════════════════════════════════════ */
-(function(){
-  var GRAD='linear-gradient(to right,#7A4B20 0%,#B99048 12%,#F3D391 25%,#FFF3C1 37%,#F3D391 50%,#C99A45 62%,#8A5B1E 75%,#B99048 88%,#7A4B20 100%)';
-  function startRaf(el){
-    if(el._v51raf) return;
-    el._v51raf=true;
-    var t0=null, DUR=3500;
-    (function loop(ts){
-      if(!t0) t0=ts;
-      var pct=(((ts-t0)%DUR)/DUR*100).toFixed(2);
-      var s=el.style;
-      s.setProperty('background',GRAD,'important');
-      s.setProperty('background-size','300% 100%','important');
-      s.setProperty('-webkit-background-clip','text','important');
-      s.setProperty('background-clip','text','important');
-      s.setProperty('-webkit-text-fill-color','transparent','important');
-      s.setProperty('color','transparent','important');
-      s.setProperty('animation','none','important');
-      s.setProperty('text-shadow','none','important');
-      /* CRITIQUE : position APRÈS shorthand → longhand explicite gagne */
-      s.setProperty('background-position',pct+'% 50%','important');
-      requestAnimationFrame(loop);
-    })(performance.now());
-  }
-  function apply(){
-    document.querySelectorAll('.h-names,.final-h-names').forEach(startRaf);
-  }
-  [0,100,520,1420].forEach(function(t){ setTimeout(apply,t); });
-})();
-
-/* ══════════════════════════════════════════════════════
-   2. VERSET BIBLIQUE — restaurer couleur/opacité
-   forceVerse() injecte animation:none sur les spans.
-══════════════════════════════════════════════════════ */
-(function(){
-  function fixVerse(){
-    document.querySelectorAll('.story2-cit-text span').forEach(function(s){
-      s.style.removeProperty('animation');
-      s.style.setProperty('display','block','important');
-      s.style.setProperty('opacity','1','important');
-      s.style.setProperty('visibility','visible','important');
-      s.style.setProperty('color','#8B5F2D','important');
-      s.style.setProperty('-webkit-text-fill-color','#8B5F2D','important');
-      s.style.setProperty('clip-path','none','important');
-      s.style.setProperty('transform','none','important');
-    });
-  }
-  [700,1600,3200,5000].forEach(function(t){ setTimeout(fixVerse,t); });
-})();
-
-/* ══════════════════════════════════════════════════════
-   3. HÉBERGEMENTS CARROUSEL
-   Clone wrap+nav → supprime TOUS les listeners existants.
-   Rendu via classes CSS (is-active/is-prev/is-next/is-hidden)
-   avec règles CSS haute-spécificité dans style.css V51.
-══════════════════════════════════════════════════════ */
-(function(){
-  var N=3, cur=0, _ready=false;
-  function render(){
-    var w=document.getElementById('stay-wrap');
-    var n=document.getElementById('stay-nav');
-    if(!w||!n) return;
-    w.querySelectorAll('.c3-item').forEach(function(el,i){
-      el.classList.toggle('is-active',i===cur);
-      el.classList.toggle('is-prev',i===(cur-1+N)%N);
-      el.classList.toggle('is-next',i===(cur+1)%N);
-      el.classList.toggle('is-hidden',i!==cur&&i!==(cur-1+N)%N&&i!==(cur+1)%N);
-    });
-    n.querySelectorAll('.c3-dot').forEach(function(d,i){
-      d.classList.toggle('is-active',i===cur);
-    });
-  }
-  function init(){
-    var wrap=document.getElementById('stay-wrap');
-    var nav=document.getElementById('stay-nav')||document.querySelector('#hebergements .c3-nav');
-    if(!wrap||!nav||wrap._v51done) return;
-    var w=wrap.cloneNode(true), n=nav.cloneNode(true);
-    wrap.parentNode.replaceChild(w,wrap);
-    nav.parentNode.replaceChild(n,nav);
-    w._v51done=true;
-    /* Overflow visible sur toute la chaîne */
-    [document.getElementById('hebergements'),
-     document.querySelector('#hebergements .es-inner'),w
-    ].forEach(function(el){ if(el) el.style.setProperty('overflow','visible','important'); });
-    /* Listeners sur éléments clonés */
-    n.querySelectorAll('.c3-arrow').forEach(function(btn){
-      btn.addEventListener('click',function(e){
-        e.stopPropagation();
-        cur=btn.getAttribute('data-dir')==='prev'?(cur-1+N)%N:(cur+1)%N;
-        render();
-      });
-    });
-    n.querySelectorAll('.c3-dot').forEach(function(d,i){
-      d.addEventListener('click',function(e){ e.stopPropagation(); cur=i; render(); });
-    });
-    w.querySelectorAll('.c3-item').forEach(function(el,i){
-      el.addEventListener('click',function(){ if(i!==cur){cur=i;render();} });
-    });
-    var sx=0;
-    w.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
-    w.addEventListener('touchend',function(e){
-      var dx=e.changedTouches[0].clientX-sx;
-      if(Math.abs(dx)>40){cur=dx<0?(cur+1)%N:(cur-1+N)%N;render();}
-    },{passive:true});
+    function go(n){ active=(n+items.length)%items.length; render(); }
+    $$('.c3-arrow',nav).forEach(function(btn){ if(btn.dataset.v52)return; btn.dataset.v52='1'; btn.onclick=function(e){e.preventDefault();e.stopPropagation();go(active+(btn.dataset.dir==='next'?1:-1));}; btn.addEventListener('touchend',function(e){e.preventDefault();go(active+(btn.dataset.dir==='next'?1:-1));},{passive:false}); });
+    $$('.c3-dot',nav).forEach(function(dot){ if(dot.dataset.v52)return; dot.dataset.v52='1'; dot.onclick=function(e){e.preventDefault();e.stopPropagation();go(Number(dot.dataset.go)||0);}; });
+    items.forEach(function(it,i){ if(it.dataset.v52)return; it.dataset.v52='1'; it.addEventListener('click',function(){ if(i!==active)go(i); },true); });
     render();
-    _ready=true;
   }
-  whenReady(function(){
-    init();
-    if(!_ready) setTimeout(init,600);
-  });
-})();
-
-/* ══════════════════════════════════════════════════════
-   4. ACTIVITÉS — clone selector, setProperty !important
-══════════════════════════════════════════════════════ */
-(function(){
-  var INFO={
-    fontainebleau:{tag:'Patrimoine',title:'Château de Fontainebleau',text:'Un incontournable royal, entre jardins majestueux, galeries historiques et architecture remarquable.'},
-    foret:{tag:'Nature',title:'Forêt de Fontainebleau',text:'Une parenthèse paisible pour se promener, respirer et découvrir les paysages emblématiques de la région.'},
-    parrot:{tag:'Famille',title:'Parrot World',text:'Une expérience immersive et colorée, parfaite pour les familles et les amoureux de la nature.'}
-  };
-  function show(root,key){
-    root.querySelectorAll('.es-act-panorama img').forEach(function(img){
-      var on=img.getAttribute('data-act-img')===key;
-      img.style.setProperty('opacity',on?'1':'0','important');
-      img.style.setProperty('z-index',on?'2':'0','important');
-      img.style.setProperty('pointer-events',on?'auto':'none','important');
-      on?img.classList.add('active'):img.classList.remove('active');
-    });
-    root.querySelectorAll('.es-act-selector button').forEach(function(b){
-      b.getAttribute('data-act-place')===key?b.classList.add('active'):b.classList.remove('active');
-    });
-    var d=INFO[key]; if(!d) return;
-    var tag=document.getElementById('esActTag');
-    var title=document.getElementById('esActTitle');
-    var text=document.getElementById('esActText');
-    if(tag) tag.textContent=d.tag;
-    if(title) title.textContent=d.title;
-    if(text) text.textContent=d.text;
+  function activities(){
+    var root=$('#autour'); if(!root) return;
+    var map={fontainebleau:{tag:'Patrimoine',title:'Château de Fontainebleau',text:'Un incontournable royal, entre jardins majestueux, galeries historiques et architecture remarquable.'},foret:{tag:'Nature',title:'Forêt de Fontainebleau',text:'Une parenthèse paisible pour se promener, respirer et découvrir les paysages emblématiques de la région.'},parrot:{tag:'Famille',title:'Parrot World',text:'Une expérience immersive et colorée, parfaite pour les familles et les amoureux de la nature.'}};
+    var buttons=$$('.es-act-selector button',root), images=$$('.es-act-panorama img',root), tag=$('#esActTag',root), title=$('#esActTitle',root), text=$('#esActText',root);
+    function act(key){ if(!map[key]) key='fontainebleau'; buttons.forEach(function(b){b.classList.toggle('active',b.dataset.actPlace===key);}); images.forEach(function(img){img.classList.toggle('active',img.dataset.actImg===key);}); if(tag)tag.textContent=map[key].tag; if(title)title.textContent=map[key].title; if(text)text.textContent=map[key].text; }
+    buttons.forEach(function(b){ if(b.dataset.v52)return; b.dataset.v52='1'; b.onclick=function(e){e.preventDefault();e.stopPropagation();act(b.dataset.actPlace);}; b.addEventListener('touchend',function(e){e.preventDefault();act(b.dataset.actPlace);},{passive:false}); });
+    act('fontainebleau');
   }
-  function init(){
-    var root=document.querySelector('.es-activities-option3'); if(!root) return;
-    var sel=root.querySelector('.es-act-selector'); if(!sel) return;
-    var newSel=sel.cloneNode(true); sel.parentNode.replaceChild(newSel,sel);
-    newSel.querySelectorAll('button').forEach(function(btn){
-      btn.addEventListener('click',function(e){
-        e.stopPropagation();
-        var k=btn.getAttribute('data-act-place');
-        if(k) show(root,k);
-      });
-    });
-    show(root,'fontainebleau');
-  }
-  whenReady(function(){ init(); setTimeout(init,800); });
-})();
-
-/* ══════════════════════════════════════════════════════
-   5. BOUTON CALENDRIER
-   Déclenché par : window.parent.eventiaRevealCalendar()
-   depuis scratch/index.html quand doneCount===3,
-   ou par postMessage eventia-scratch-complete.
-══════════════════════════════════════════════════════ */
-(function(){
-  function reveal(){
-    var btn=document.getElementById('calendarBtnParent'); if(!btn) return;
-    var p=btn.style;
-    p.setProperty('display','inline-flex','important');
-    p.setProperty('opacity','1','important');
-    p.setProperty('visibility','visible','important');
-    p.setProperty('pointer-events','auto','important');
-    p.setProperty('margin-top','20px','important');
-    p.setProperty('width','auto','important');
-    p.setProperty('min-width','unset','important');
-    p.setProperty('overflow','visible','important');
-    btn.classList.add('v50-on','v49-on','eventia-revealed');
-    if(!document.getElementById('v50-cal-style')){
-      var st=document.createElement('style'); st.id='v50-cal-style';
-      st.textContent='#calendarBtnParent{display:inline-flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;margin-top:20px!important;width:auto!important;}';
-      document.head.appendChild(st);
+  function rsvpBurst(x,y,count){
+    var layer=$('.eventia-rsvp-v52-layer'); if(!layer){ layer=document.createElement('div'); layer.className='eventia-rsvp-v52-layer'; document.body.appendChild(layer); }
+    var colors=['#B99048','#D9B760','#F3D58A','#FFF3C1','#F7EFE3','#C9B37E','#ffffff'];
+    for(var i=0;i<count;i++){
+      var p=document.createElement('i'), dust=Math.random()<.32, a=-Math.PI/2+(Math.random()-.5)*2.5, dist=80+Math.random()*260;
+      p.className='eventia-rsvp-v52-piece';
+      p.style.setProperty('--x',x+'px'); p.style.setProperty('--y',y+'px'); p.style.setProperty('--w',(dust?2+Math.random()*3:4+Math.random()*7)+'px'); p.style.setProperty('--h',(dust?2+Math.random()*3:6+Math.random()*11)+'px'); p.style.setProperty('--r',dust?'50%':'2px'); p.style.setProperty('--c',colors[i%colors.length]); p.style.setProperty('--dx',(Math.cos(a)*dist)+'px'); p.style.setProperty('--dy',(Math.sin(a)*dist+80+Math.random()*80)+'px'); p.style.setProperty('--rot',((Math.random()>.5?1:-1)*(280+Math.random()*820))+'deg'); p.style.setProperty('--dur',(900+Math.random()*850)+'ms');
+      layer.appendChild(p); setTimeout((function(el){return function(){el.remove();};})(p),2100);
     }
-    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function')window.eventiaFinalConfetti();},350);
-    setTimeout(function(){if(typeof window.eventiaFinalConfetti==='function')window.eventiaFinalConfetti();},1100);
   }
-  window.eventiaRevealCalendar=reveal;
-  window.addEventListener('message',function(e){
-    if(!e||!e.data) return;
-    var t=e.data.type, a=e.data.action;
-    if(t==='eventia-scratch-complete'||t==='eventia-date-revealed'||a==='confetti'){
-      reveal(); setTimeout(reveal,200);
+  function launchRsvp(){
+    var input=$('#rsvp input[name="presence"][value="oui"]'), label=input&&(input.closest('label')||input), r=label&&label.getBoundingClientRect();
+    var x=r?r.left+r.width/2:innerWidth/2, y=r?r.top+r.height/2:innerHeight*.55;
+    rsvpBurst(x,y,120); setTimeout(function(){rsvpBurst(x-60,y-10,70);},130); setTimeout(function(){rsvpBurst(x+60,y-10,70);},250);
+  }
+  window.launchRsvpConfetti=launchRsvp; window.fireRsvpConfetti=launchRsvp;
+  function rsvp(){
+    var root=$('#rsvp'); if(!root) return;
+    if(root.dataset.v52)return; root.dataset.v52='1';
+    root.addEventListener('change',function(e){var t=e.target; if(t&&t.matches('input[name="presence"][value="oui"]')&&t.checked) launchRsvp();},true);
+    root.addEventListener('click',function(e){var pill=e.target.closest&&e.target.closest('.presence-pill'); if(pill&&pill.querySelector('input[name="presence"][value="oui"]')) setTimeout(launchRsvp,60);},true);
+    root.addEventListener('touchend',function(e){var pill=e.target.closest&&e.target.closest('.presence-pill'); if(pill&&pill.querySelector('input[name="presence"][value="oui"]')) setTimeout(launchRsvp,80);},{passive:true,capture:true});
+  }
+  function seamless(){ $$('.sep-line').forEach(function(x){x.remove();}); }
+  function hideLangOnScroll(){
+    var dateSection=document.getElementById('notre-date');
+    if(!dateSection) return;
+    function check(){
+      var rect=dateSection.getBoundingClientRect();
+      if(rect.top<window.innerHeight*0.5) document.body.classList.add('eventia-scrolled');
+      else document.body.classList.remove('eventia-scrolled');
     }
-  });
-  /* Fallback 30s : garantit l'apparition si le message scratch est manqué */
-  setTimeout(reveal,30000);
-})();
-
-/* ══════════════════════════════════════════════════════
-   6. RSVP CONFETTI — transitions CSS, sans keyframes
-   (évite le problème rsvpV47 keyframe non défini)
-══════════════════════════════════════════════════════ */
-(function(){
-  var COLS=['#F3D391','#D8AE67','#B99048','#FFF4CF','#C99A45','#ffffff','#FFE44A'];
-  function burst(cx,cy,n){
-    var layer=document.createElement('div');
-    layer.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99998;overflow:visible;';
-    document.body.appendChild(layer);
-    for(var i=0;i<n;i++){
-      (function(){
-        var el=document.createElement('div');
-        var ang=Math.random()*Math.PI*2;
-        var dist=70+Math.random()*200;
-        var tx=Math.cos(ang)*dist, ty=Math.sin(ang)*dist-90;
-        var rot=(Math.random()-.5)*720;
-        var sz=3+Math.random()*7;
-        var col=COLS[Math.floor(Math.random()*COLS.length)];
-        var delay=Math.random()*200, dur=600+Math.random()*400;
-        el.style.cssText=[
-          'position:absolute',
-          'left:'+(cx-sz/2)+'px','top:'+(cy-sz/2)+'px',
-          'width:'+sz+'px','height:'+(sz*1.6)+'px',
-          'background:'+col,'border-radius:2px','opacity:0',
-          'transition:transform '+dur+'ms ease-out '+delay+'ms,opacity '+(dur*.75)+'ms ease-out '+delay+'ms'
-        ].join(';');
-        layer.appendChild(el);
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){
-          el.style.opacity='1';
-          el.style.transform='translate('+tx+'px,'+ty+'px) rotate('+rot+'deg)';
-          setTimeout(function(){el.style.opacity='0';},delay+dur*.55);
-        }); });
-      })();
-    }
-    setTimeout(function(){try{layer.remove();}catch(ex){}},2200);
+    window.addEventListener('scroll',check,{passive:true});
+    check();
   }
-  function fire(){
-    var rsvp=document.getElementById('rsvp');
-    var r=rsvp?rsvp.getBoundingClientRect():null;
-    var cx=r?r.left+r.width*.5:window.innerWidth*.5;
-    var cy=r?Math.min(r.top+r.height*.3,window.innerHeight*.65):window.innerHeight*.45;
-    burst(cx,cy,90);
-    setTimeout(function(){burst(cx-65,cy-25,60);},130);
-    setTimeout(function(){burst(cx+65,cy-25,60);},265);
-  }
-  window.launchRsvpConfetti=fire;
-  whenReady(function(){
-    setTimeout(function(){
-      document.querySelectorAll('#rsvp input[name="presence"]').forEach(function(inp){
-        if(inp._v50) return; inp._v50=true;
-        inp.addEventListener('change',function(){
-          if(inp.value==='oui'&&inp.checked) fire();
-        });
-      });
-      document.querySelectorAll('#rsvp .presence-pill').forEach(function(lbl){
-        if(lbl._v50) return; lbl._v50=true;
-        lbl.addEventListener('click',function(){
-          setTimeout(function(){
-            var inp=lbl.querySelector('input[value="oui"]');
-            if(inp&&inp.checked) fire();
-          },60);
-        });
-      });
-    },800);
-  });
-})();
-
+  function init(){ lockShimmer(); hideCalendar(); stayCarousel(); activities(); rsvp(); seamless(); hideLangOnScroll(); }
+  ready(init); setTimeout(init,250); setTimeout(init,900); setTimeout(init,1800);
+  window.addEventListener('message',function(e){var d=e&&e.data||{}; if(d.type==='eventia-final-confetti-start') revealCalendar('final-confetti'); if(d.type==='eventia-timeline-height'&&d.height){var f=$('#timelineExactFrame'); if(f) f.style.minHeight=Math.max(680,Math.min(1100,d.height+20))+'px';}},false);
 })();
