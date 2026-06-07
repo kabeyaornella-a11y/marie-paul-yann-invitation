@@ -266,6 +266,62 @@ canvas.sc{
 }
 #revealBlock.show .goldline-date{width:200px}
 </style>
+
+<style id="eventia-scratch-calendar-v29">
+#scratchCalendarBtn{
+  margin-top:14px;
+  opacity:0;
+  transform:translateY(10px) scale(.96);
+  pointer-events:none;
+  appearance:none;-webkit-appearance:none;
+  border:1px solid rgba(255,238,185,.72);
+  border-radius:999px;
+  padding:13px 24px 12px;
+  min-width:min(82vw,320px);
+  font-family:'Tenor Sans','Cinzel',sans-serif;
+  font-size:10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:#fff7df;
+  background:linear-gradient(135deg,#8b5e24 0%,#c79a45 42%,#f1d586 55%,#a06f28 100%);
+  box-shadow:0 13px 28px rgba(98,59,18,.25),inset 0 1px 0 rgba(255,255,255,.45),0 0 22px rgba(216,174,103,.18);
+  text-shadow:0 1px 1px rgba(55,32,8,.28);
+  transition:opacity .75s ease,transform .75s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+#revealBlock.calendar-ready #scratchCalendarBtn{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+#scratchCalendarBtn:hover,#scratchCalendarBtn:focus,#scratchCalendarBtn:active{
+  color:#fff7df;
+  background:linear-gradient(135deg,#8b5e24 0%,#c79a45 42%,#f1d586 55%,#a06f28 100%);
+  filter:none;outline:none;
+  box-shadow:0 15px 34px rgba(98,59,18,.30),inset 0 1px 0 rgba(255,255,255,.48),0 0 26px rgba(216,174,103,.26);
+}
+</style>
+
+<style id="eventia-scratch-instruction-v31-visible">
+#scratchGlobalInstruction.eventia-scratch-instruction{
+  position:relative;
+  z-index:80;
+  display:block!important;
+  margin:clamp(14px,3vh,24px) auto clamp(10px,2.2vh,18px);
+  width:100%;
+  text-align:center;
+  font-family:'Cinzel',serif;
+  font-size:clamp(9px,2.45vw,12px);
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(87,55,31,.62);
+  opacity:1!important;
+  visibility:visible!important;
+  transition:opacity .32s ease, transform .32s ease, visibility .32s ease;
+  pointer-events:none;
+}
+#scratchGlobalInstruction.eventia-scratch-instruction.is-hidden{
+  opacity:0!important;
+  visibility:hidden!important;
+  transform:translateY(-4px);
+}
+</style>
 </head>
 <body>
 
@@ -313,11 +369,14 @@ canvas.sc{
 
 </div>
 
+<p id="scratchGlobalInstruction" class="eventia-scratch-instruction">GRATTEZ DÉLICATEMENT CHAQUE MÉDAILLON</p>
+
 <!-- DATE RÉVÉLÉE -->
 <div id="revealBlock">
   <div class="date-samedi">Samedi</div>
   <div class="date-main">22 Mai 2027</div>
   <div class="goldline-date"></div>
+  <button id="scratchCalendarBtn" class="scratch-calendar-btn" type="button">Réserver ce jour précieux</button>
 </div>
 </main>
 
@@ -507,21 +566,23 @@ function launchMedalConfettiBurst(cx, cy) {
 /* ================================================================
    POUSSIÈRE DE GRATTAGE : bronze, or, champagne uniquement
    ================================================================ */
-function spawnDust(x, y) {
-  for (var d = 0; d < 6; d++) {
-    (function(){
-      var dp = document.createElement('div');
-      var sz = .7 + Math.random() * 2.4;
-      var angle = Math.random() * Math.PI * 2;
-      var dist  = 5 + Math.random() * 22;
-      var col   = DUST_COLORS[Math.floor(Math.random() * DUST_COLORS.length)];
-      dp.style.cssText = 'position:fixed;left:'+x+'px;top:'+y+'px;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+col+';box-shadow:0 0 5px '+col+';pointer-events:none;z-index:8500;opacity:.95';
+function spawnDust(screenX, screenY) {
+  for (var d = 0; d < 5; d++) {
+    (function() {
+      var dp  = document.createElement('div');
+      var sz  = .8 + Math.random()*2.2;
+      var ang = Math.random()*Math.PI*2;
+      var dst = 4 + Math.random()*18;
+      var col = ['#F8D77E','#FFF7DD','#F3D391','#E8D8A8','#FFFFFF'][Math.floor(Math.random()*5)];
+      dp.style.cssText = 'position:fixed;left:'+screenX+'px;top:'+screenY+'px;'+
+        'width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+col+';'+
+        'box-shadow:0 0 5px '+col+';pointer-events:none;z-index:8500;opacity:.9';
       document.body.appendChild(dp);
-      var anim = dp.animate([
-        {transform:'translate(0,0) scale(1)',opacity:.95},
-        {transform:'translate('+(Math.cos(angle)*dist)+'px,'+(Math.sin(angle)*dist-7)+'px) scale(.25)',opacity:0}
-      ],{duration:360+Math.random()*260,easing:'ease-out',fill:'forwards'});
-      anim.onfinish=function(){ if(dp.parentNode) dp.parentNode.removeChild(dp); };
+      dp.animate([
+        {transform:'translate(0,0)',opacity:.9},
+        {transform:'translate('+(Math.cos(ang)*dst)+'px,'+(Math.sin(ang)*dst-6)+'px)',opacity:0}
+      ],{duration:300+Math.random()*200,easing:'ease-out',fill:'forwards'})
+      .onfinish = function(){ if(dp.parentNode) dp.parentNode.removeChild(dp); };
     })();
   }
 }
@@ -956,12 +1017,7 @@ function finishMedal(medalEl, idx) {
   launchMedalConfettiBurst(cx, cy);
   doneCount++;
 
-  if (doneCount === 1) {
-    try { window.parent.postMessage({type:'eventia-scratch-start'}, '*'); } catch(e) {}
-  }
   if (doneCount === 3) {
-    try { window.parent.eventiaRevealCalendar(); } catch(e) {}
-    try { window.parent.postMessage({type:'eventia-scratch-complete'}, '*'); } catch(e) {}
     setTimeout(function(){
       document.getElementById('medals').classList.add('hide');
       setTimeout(function(){
@@ -971,6 +1027,7 @@ function finishMedal(medalEl, idx) {
         var vw = window.innerWidth, vh = window.innerHeight;
         setTimeout(function(){
           finalConfettiStream();
+          document.getElementById('revealBlock').classList.add('calendar-ready');
         }, 1450);
       }, 420);
     }, 2000);
@@ -980,5 +1037,70 @@ function finishMedal(medalEl, idx) {
 /* Init */
 document.querySelectorAll('.medal').forEach(initMedal);
 </script>
+
+<script id="eventia-scratch-calendar-v29-js">
+(function(){
+  function icsDateLine(s){return s.replace(/[-:]/g,'').replace('.000','');}
+  function buildWeddingICS(){
+    return [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Eventia Signature//Marie-Paul et Yann//FR',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:marie-paul-yann-20270522@eventiasignature.fr',
+      'DTSTAMP:20260607T120000Z',
+      'DTSTART:20270522T110000Z',
+      'DTEND:20270522T215900Z',
+      'SUMMARY:Mariage de Marie-Paul et Yann',
+      'LOCATION:Mairie de Gennevilliers puis Domaine des Rois',
+      'DESCRIPTION:13h00 - Cérémonie civile à la Mairie de Gennevilliers. Bénédiction nuptiale et réception au Domaine des Rois. Samedi 22 mai 2027.',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+  }
+  function downloadICS(){
+    var blob=new Blob([buildWeddingICS()],{type:'text/calendar;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='mariage-marie-paul-yann-22-05-2027.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},900);
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('#scratchCalendarBtn');
+    if(!b)return;
+    e.preventDefault();
+    downloadICS();
+  },true);
+})();
+</script>
+
+<style id="eventia-scratch-hide-instruction-v30">
+.eventia-scratch-instruction.is-hidden, .scratch-instruction.is-hidden, .scratch-help.is-hidden{opacity:0!important;visibility:hidden!important;transform:translateY(-4px)!important;transition:opacity .28s ease,visibility .28s ease,transform .28s ease!important;}
+</style>
+
+<script id="eventia-scratch-first-touch-hide-v31">
+(function(){
+  var hidden=false;
+  function hideScratchInstruction(){
+    if(hidden) return;
+    hidden=true;
+    var nodes=document.querySelectorAll('#scratchGlobalInstruction,.eventia-scratch-instruction,.scratch-instruction,.scratch-help');
+    nodes.forEach(function(n){ n.classList.add('is-hidden'); });
+  }
+  ['pointerdown','touchstart','mousedown'].forEach(function(type){
+    document.addEventListener(type,function(e){
+      if(e.target && (e.target.closest('canvas.sc') || e.target.closest('.medal') || e.target.closest('#medals'))){
+        hideScratchInstruction();
+      }
+    },{passive:true,capture:true});
+  });
+  window.eventiaHideScratchInstruction=hideScratchInstruction;
+})();
+</script>
+
 </body>
 </html>
