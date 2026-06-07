@@ -445,13 +445,13 @@ button[type="submit"],
   display:block!important;
   text-align:center!important;
   box-sizing:border-box!important;
-  background:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
-  background-size:260% 100%!important;
+  background-image:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
+  background-size:200% 100%!important;
   -webkit-background-clip:text!important;
   background-clip:text!important;
   color:transparent!important;
   -webkit-text-fill-color:transparent!important;
-  animation:eventiaShimmerInfinite 4.8s linear infinite!important;
+  animation:eventiaHeroShimmer 2.4s ease-in-out infinite alternate!important;
   will-change:background-position!important;
 }
 /* Prénoms finale : centrés, même shimmer */
@@ -460,16 +460,19 @@ button[type="submit"],
   text-align:center!important;
   margin:0 auto!important;
   width:100%!important;
-  background:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
-  background-size:260% 100%!important;
+  background-image:linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)!important;
+  background-size:200% 100%!important;
   -webkit-background-clip:text!important;
   background-clip:text!important;
   color:transparent!important;
   -webkit-text-fill-color:transparent!important;
-  animation:eventiaShimmerInfinite 4.8s linear infinite!important;
+  animation:eventiaHeroShimmer 2.4s ease-in-out infinite alternate!important;
   will-change:background-position!important;
 }
-@keyframes eventiaShimmerInfinite{0%{background-position:260% 50%}100%{background-position:-260% 50%}}
+@keyframes eventiaHeroShimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+/* Phrase sous les prénoms : remontée et lisible */
+#hero .h-q-wrap{top:72%!important;}
+#hero .h-q1,#hero .h-q2{color:rgba(245,228,180,.94)!important;text-shadow:0 1px 10px rgba(0,0,0,.62),0 0 18px rgba(0,0,0,.22)!important;}
 
 /* Hero intro text: taille +15%, centré */
 #hero .h-intro,#txt-intro{font-size:clamp(8px,1.9vw,16px)!important;text-align:center!important;}
@@ -1102,14 +1105,7 @@ body.eventia-scrolled #lang-sw{opacity:0!important;visibility:hidden!important;p
     });
   });
 
-  /* fallback shimmer Safari : redémarre l'animation si le navigateur la fige */
-  setInterval(function(){
-    document.querySelectorAll('.h-names,.final-h-names').forEach(function(el){
-      el.style.animationName = 'none';
-      void el.offsetWidth;
-      el.style.animationName = 'eventiaShimmerInfinite';
-    });
-  }, 12000);
+  /* shimmer géré par rAF dans lockShimmer — pas de restart CSS nécessaire */
 
   /* ICS correct */
   function buildICS(){

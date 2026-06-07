@@ -1197,10 +1197,15 @@ function sendRsvp(){
   function lockShimmer(){
     $$('#hero .h-names,.h-names,#photo-finale .final-h-names,.final-h-names').forEach(function(el){
       el.classList.add('eventia-shimmer-v52');
-      imp(el,'background-image','linear-gradient(90deg,#7A4B20 0%,#B99048 9%,#F3D58A 18%,#FFF7D6 26%,#F3D58A 34%,#B99048 44%,#7A4B20 52%,#B99048 62%,#F3D58A 72%,#FFF7D6 82%,#B99048 92%,#7A4B20 100%)');
-      imp(el,'background-size','400% 100%'); imp(el,'background-repeat','repeat-x'); imp(el,'background-position','0% 50%');
+      imp(el,'background-image','linear-gradient(90deg,#9d7027 0%,#f9e7a9 18%,#b88a3a 32%,#fff4bf 48%,#b88a3a 62%,#f6dc8e 78%,#9d7027 100%)');
+      imp(el,'background-size','200% 100%');
       imp(el,'-webkit-background-clip','text'); imp(el,'background-clip','text'); imp(el,'-webkit-text-fill-color','transparent'); imp(el,'color','transparent');
-      imp(el,'animation-name','eventiaV52NameShimmer'); imp(el,'animation-duration','4.8s'); imp(el,'animation-timing-function','linear'); imp(el,'animation-iteration-count','infinite'); imp(el,'animation-direction','normal'); imp(el,'animation-fill-mode','none'); imp(el,'animation-play-state','running');
+      imp(el,'animation-name','none');
+      if(!el._shimRaf){
+        el._shimRaf=1;
+        var p=0, d=1;
+        (function loop(){ p+=d*0.7; if(p>=100){p=100;d=-1;} if(p<=0){p=0;d=1;} el.style.setProperty('background-position',p+'% 50%','important'); requestAnimationFrame(loop); })();
+      }
     });
     var intro=$('#txt-intro')||$('#hero .h-intro');
     if(intro){ intro.textContent='VOUS ÊTES CONVIÉS À LA CÉLÉBRATION DU MARIAGE DE'; imp(intro,'white-space','nowrap'); imp(intro,'width','100vw'); imp(intro,'max-width','100vw'); imp(intro,'left','50%'); imp(intro,'transform','translate3d(-50%,0,0)'); imp(intro,'font-size','clamp(7px,2vw,13px)'); imp(intro,'letter-spacing','0'); }
@@ -1282,7 +1287,9 @@ function sendRsvp(){
   }
   function boostHeroStars(){
     var hero=document.getElementById('hero'); if(!hero) return;
+    if(document.getElementById('eventia-boost-canvas')) return;
     var extra=document.createElement('canvas');
+    extra.id='eventia-boost-canvas';
     extra.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:3;';
     hero.appendChild(extra);
     var ectx=extra.getContext('2d');
@@ -1296,8 +1303,7 @@ function sendRsvp(){
     function loop(){
       if(!running) return;
       ectx.clearRect(0,0,W(),H());
-      if(stars.length<110&&Math.random()<.85) spawn();
-      if(stars.length<110&&Math.random()<.55) spawn();
+      if(stars.length<18&&Math.random()<.25) spawn();
       for(var i=stars.length-1;i>=0;i--){var s=stars[i];s.y+=s.vy;s.x+=s.vx;s.twk+=.07;var alpha=.35+.55*Math.abs(Math.sin(s.twk));ectx.save();ectx.globalAlpha=alpha;ectx.fillStyle=s.col;ectx.shadowColor=s.col;ectx.shadowBlur=8;star4(ectx,s.x,s.y,s.s*2.2);ectx.restore();if(s.y<-10)stars.splice(i,1);}
       requestAnimationFrame(loop);
     }
